@@ -1,0 +1,19 @@
+# Base Image
+FROM node:20-alpine
+
+#Working Directory Define 
+WORKDIR /Ecommerce/Backend/authservice
+
+
+# Copy the package to install 
+COPY package* ./
+
+#clean install 
+RUN  npm ci 
+
+#copy all the file for the host to working directory 
+COPY . .
+
+
+# cmd when container is on 
+CMD [ "npm", "start" ]

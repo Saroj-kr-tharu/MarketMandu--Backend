@@ -6,39 +6,95 @@ networks:
 
 volumes:
   #blind volume for persistance storage
-  ecommerce_microservice_vol:
-  apigateway_microservice_vol:
-  payment_microservice_vol:
-  remainder_microservice_vol:
+  ecommerce_service_vol:
+  auth_service_vol:
+  apigateway_service_vol:
+  payment_service_vol:
+  remainder_service_vol:
   rabbitmq_server_vol:
-  mysql_data_vol:
-
+  postgres_db_vol:
+  redis_db_vol:
+  mongodb_vol:
 
 services:
   #define service or container 
-  mysql_service:
-    image: mysql:8.0
-    container_name: mysql_Ecommerce
+  postgres_service:
+      image: postgres:latest
+      container_name: postgres_db
+      restart: unless-stopped
+      networks:
+        - Ecommerce_net
+      env_file:
+        - ./envirnoment/.env.postgres
+      ports:
+        - "5432:5432"
+      volumes:
+        - postgres_db_vol:/var/lib/postgresql
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres -d POSTGRES_db"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+  
+  mongodb_service:
+    image: mongo:latest
+    container_name: mongodb_service
     networks:
       - Ecommerce_net
     ports:
-      - "3308:3306"
+      # - "27017:27017"
+      - "27018:27017"
     volumes:
-      - mysql_data_vol:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=12345
-      - MYSQL_DATABASE=ecommerce
-    restart: unless-stopped
+      - mongodb_vol:/data/db
+    env_file:
+      - ./envirnoment/.env.mongodb
+        
+    command: >
+      mongod --logpath /var/log/mongodb/mongod.log --quiet --logappend
+      --setParameter logComponentVerbosity='{network: {verbosity: -1}}' 
+      --setParameter logLevel=0
+    
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p12345" ]
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
-  
+
+  redis_service:
+    image: redis:alpine
+    container_name: redis_service
+    ports:
+      - "6380:6379"
+    networks:
+      - Ecommerce_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - "5540:5540" 
+    environment:
+      - RI_ACCEPT_EULA=yes
+      - RI_AUTO_DISCOVER_REDIS=redis_service:6379
+    networks:
+      - Ecommerce_net
+    depends_on:
+      redis_service:
+        condition: service_healthy
+    volumes:
+      - redis_db_vol:/data
+    restart: unless-stopped
+
   rabbitmq_service:
     image: "rabbitmq:3-management"
     container_name: rabbitmq_server
+    restart: unless-stopped
     networks:
       - Ecommerce_net
     ports:
@@ -55,60 +111,80 @@ services:
       timeout: 5s
       retries: 5
 
-  ecommerce_backend_service: 
-    build: ./02_Ecomerce
-    container_name: ecommerce_backend_service
+
+  auth_service: 
+    image: sarojdockerworkspace/auth_service:latest
+    build: 
+      context: ./02_Auth_microservice
+      dockerfile: dockerfile
+    container_name: auth_service
     env_file:
-      - ./02_Ecomerce/.env
+      - ./envirnoment/.env
+      - ./envirnoment/.env.auth
     networks:
       - Ecommerce_net
     ports:
-      - "8000:8000"
+      - "3001:3001"
     volumes:
-      - ecommerce_microservice_vol:/Ecommerce/backend/developer/backend/node_modules
-    environment:
-      - MYSQL_USER=root
-      - MYSQL_HOST=mysql_service
-      - MYSQL_PORT=3306
-      - MYSQL_ROOT_PASSWORD=12345
-      - MYSQL_DATABASE=ecommerce
+      - ./02_Auth_microservice:/Ecommerce/Backend/authservice
+      - auth_service_vol:/Ecommerce/Backend/authservice/node_modules
+    depends_on:
+      postgres_service: 
+        condition: service_healthy
+      rabbitmq_service: 
+        condition: service_healthy
+
+  ecommerce_service: 
+    image:  sarojdockerworkspace/ecommerce_service:latest
+    build: 
+      context: ./02_Ecomerce
+      dockerfile: dockerfile
+    container_name: ecommerce_service
+    env_file:
+      - ./envirnoment/.env
+      - ./envirnoment/.env.ecomerce
+    networks:
+      - Ecommerce_net
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./02_Ecomerce:/Ecommerce/backend
+      - ecommerce_service_vol:/Ecommerce/backend/node_modules   
 
     depends_on:
-      mysql_service:
+      postgres_service:
         condition: service_healthy
+
     restart: unless-stopped
     command: >
       sh -c "
         npm install &&
         cd src && 
-        npx sequelize-cli db:create --env development &&
+        npx sequelize-cli db:create --env development || true  &&
         npx sequelize-cli db:migrate --env development &&
         npx sequelize-cli  db:seed:all --env development &&   
         npm start
       "
-
   
-
-  payment_backend_service:
-    container_name: PAYMENT_Service_microservice
-    build: ./05_Payment_microservice
+  payment_service:
+    image:  sarojdockerworkspace/payment_service:latest
+    container_name: payment_service
+    build:
+      context: ./05_Payment_microservice
+      dockerfile: dockerfile
     env_file:
-      - ./05_Payment_microservice/.env
+      - ./envirnoment/.env
+      - ./envirnoment/.env.payment
     networks:
       - Ecommerce_net
     ports:
       - "3009:3009"
     volumes:
-      - ./05_Payment_microservice:/Ecommerce/backend/developer/payment_microservice
-      - payment_microservice_vol:/Ecommerce/backend/developer/payment_microservice/node_modules
-    environment:
-      - MYSQL_HOST=mysql_service
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=12345
-      - MYSQL_DATABASE=PaymentDB
+      - ./05_Payment_microservice:/Ecommerce/backend/payment_service
+      - payment_service_vol:/Ecommerce/backend/payment_service/node_modules
+    restart: unless-stopped
     depends_on:
-      mysql_service:
+      postgres_service:
         condition: service_healthy
       rabbitmq_service:
         condition: service_healthy
@@ -117,57 +193,60 @@ services:
       sh -c "
         npm install &&
         cd src && 
-        npx sequelize-cli db:create --env development &&
+        npx sequelize-cli db:create --env development || true &&
         npx sequelize-cli db:migrate --env development &&
         npm start
       "
 
-      
-
-
+ 
   api_gateway_service:
-    container_name: api_gateway_service_microservice
+    image: sarojdockerworkspace/api_gateway:latest
+    container_name: api_gateway_service
     build: ./01_ApiGateway
     env_file:
-      - ./01_ApiGateway/.env
+      - ./envirnoment/.env
+      - ./envirnoment/.env.apigateway
     networks:
       - Ecommerce_net
     ports:
       - "3000:3000"
     volumes:
-      - ./01_ApiGateway:/Ecommerce/backend/developer/apigateway
-      - apigateway_microservice_vol:/Ecommerce/backend/developer/apigateway/node_modules
+      - ./01_ApiGateway:/Ecommerce/backend/apigateway_service
+      - apigateway_service_vol:/Ecommerce/backend/apigateway_service/node_modules
+    command: >
+      sh -c "
+        npm install &&
+        npm start
+      "
   
-  remainder_backend_service:
-    container_name: Remainder_Service_microservice
+  remainder_service:
+    image: sarojdockerworkspace/remainder_backend:latest
+    container_name: remainder_service
     build:
-      context: ./03_RemainderMicroService
-      dockerfile: Dockerfile
+      context: ./04_Remainder_microservice
+      dockerfile: dockerfile
     env_file:
-      - ./03_RemainderMicroService/.env
+      - ./envirnoment/.env
+      - ./envirnoment/.env.remainder
     networks:
       - Ecommerce_net
     ports:
       - "3004:3004"
     volumes:
-      - ./03_RemainderMicroService:/Ecommerce/backend/developer/remainder_microservice
-      - remainder_microservice_vol:/Ecommerce/backend/developer/remainder_microservice/node_modules
-    environment:
-      - MYSQL_HOST=mysql_service
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=12345
-      - MYSQL_DATABASE=RemainderService_db_DEV
+      - ./04_Remainder_microservice:/Ecommerce/backend/remainder_service
+      - remainder_service_vol:/Ecommerce/backend/remainder_service/node_modules
+    restart: unless-stopped
     depends_on:
       rabbitmq_service:
         condition: service_healthy
-      mysql_service:
+      postgres_service:
         condition: service_healthy
     command: >
       sh -c "
         npm install &&
         cd src &&
-        npx sequelize-cli db:create --env development &&
-        npx sequelize-cli db:migrate --env development &&
+        npx sequelize-cli db:create --env development || true &&
+        npx sequelize-cli db:migrate --env development  && 
+        npx sequelize-cli db:seed  --env development || true &&
         npm start
       "

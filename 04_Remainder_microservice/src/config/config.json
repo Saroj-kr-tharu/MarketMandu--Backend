@@ -1,0 +1,29 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "12345",
+    "database": "RemainderService_db_DEV",
+    "host": "postgres_service",
+    "port": 5432,
+    "dialect": "postgres",
+    "logging": false
+  },
+  "test": {
+    "username": "postgres",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "port": 5432,
+    "dialect": "postgres",
+    "logging": false
+  },
+  "production": {
+    "username": "postgres",
+    "password": "12345",
+    "database": "RemainderService_db_DEV",
+    "host": "127.0.0.1",
+    "port": 5432,
+    "dialect": "postgres",
+    "logging": false
+  }
+}

@@ -14,7 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   paymentTransaction.init({
-    userEmail: DataTypes.STRING,
+    userEmail: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isEmail: true
+      }
+    },
     paymentMethod: {
       type: DataTypes.ENUM('ESEWA', 'KHALTI', 'STRIPE', 'COD'),
       allowNull: false
@@ -23,19 +29,29 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    transactionId: DataTypes.STRING,
-    
-    currency: DataTypes.STRING,
-    amount: DataTypes.INTEGER,
-    
+    transactionId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
+    currency: {
+      type: DataTypes.STRING,
+      defaultValue: 'npr'
+    },
+    amount: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     status: {
       type: DataTypes.ENUM('FAILED', 'SUCCESS', 'PENDING', 'REFUND'),
-      allowNull: false
+      allowNull: false,
+      defaultValue: 'PENDING'
     },
 
   }, {
     sequelize,
     modelName: 'paymentTransaction',
+    tableName: 'paymentTransactions',
   });
   return paymentTransaction;
 };

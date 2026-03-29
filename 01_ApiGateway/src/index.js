@@ -1,13 +1,12 @@
 const express = require("express");
 const morgan = require("morgan");
-const { createProxyMiddleware } = require("http-proxy-middleware");
 const { default: rateLimit } = require("express-rate-limit");
 const cors = require("cors");
 
-const {  FORTEND_URL, ECOMMERCE_BACKEND_URL, PAYMENT_BACKEND_URL } = require("./serverConfig/serverConfig");
+const {  FORTEND_URL, PORT } = require("./serverConfig/server.config");
+const {  authRoutes, paymentRoutes, remainderRoutes, ecommerceRoutes } = require("./routes/index");
 
 const app = express();
-const PORT = 3000;
 
 const limiter = rateLimit({
   windowMs: 2 * 60 * 1000,
@@ -17,15 +16,11 @@ const limiter = rateLimit({
 app.use(morgan("combined"));
 app.use(limiter);
 
-app.get('/ping', (req, res) => {
-  res.status(200).json({ message: 'api gateway is good to go' });
-});
-
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      const allowedOrigins = ['http://localhost:4200'];
+      const allowedOrigins = [FORTEND_URL];
      
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -41,28 +36,18 @@ app.use(
 );
 
 
-const ecomerce_midle_proxy = createProxyMiddleware({
-  target: ECOMMERCE_BACKEND_URL,
-  changeOrigin: true,
-  pathRewrite: {
-    '^/marketmandu': '',
-  }
+app.use("/auth", authRoutes);
+app.use("/payment", paymentRoutes);
+app.use("/ecommerce", ecommerceRoutes);
+app.use("/remainder", remainderRoutes);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/ping', (req, res) => {
+  res.status(200).json({ message: 'api gateway is good to go' });
 });
-
-const payment_midle_proxy = createProxyMiddleware({
-  target: PAYMENT_BACKEND_URL,
-  changeOrigin: true,
-  pathRewrite: {
-    '^/payment': '',
-  },
-
-});
-
-
-
-app.use("/marketmandu",ecomerce_midle_proxy );
-app.use("/payment", payment_midle_proxy);
 
 app.listen(PORT, () => {
-  console.log(`Gateway running on http://localhost:${PORT}`);
+  console.log(`ApiGateway Server Start on http://localhost:${PORT}`);
 });

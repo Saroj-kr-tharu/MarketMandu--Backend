@@ -1,7 +1,7 @@
 FROM node:18-alpine
 # from the base image node 
 
-WORKDIR /Ecommerce/backend/developer/payment_microservice
+WORKDIR /Ecommerce/backend/payment_service
 # working directory define 
 
 COPY package*.json ./

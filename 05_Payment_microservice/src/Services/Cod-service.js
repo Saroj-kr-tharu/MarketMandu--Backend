@@ -17,7 +17,7 @@ class CodService {
            
 
             // -> make a record at transitionTable orderItems
-            let finalData = { amount: parseInt(data.amount), userEmail: data.userEmail,status:'PENDING', transactionId: data.transactionId, orderItems:data.items, paymentMethod: "cod", orderId: data.orderId };
+            let finalData = { amount: parseInt(data.amount), userEmail: data.userEmail,status:'PENDING', transactionId: data.transactionId, orderItems:data.items, paymentMethod: "COD", orderId: data.orderId };
           
             await paymentTransactionService.createService(finalData);
 

@@ -1,7 +1,7 @@
 FROM node:18-alpine
 # from the base image node
 
-WORKDIR /Ecommerce/backend/developer/apigateway
+WORKDIR /Ecommerce/backend/apigateway_service
 # working directory define 
 
 COPY package*.json ./

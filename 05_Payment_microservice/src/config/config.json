@@ -1,11 +1,11 @@
 {
   "development": {
-    "username": "root",
+    "username": "postgres",
     "password": "12345",
     "database": "PaymentDB",
-    "host": "mysql_service",
-    "port": 3306,
-    "dialect": "mysql"
+    "dialect": "postgres",
+    "host": "postgres_db",
+    "port": 5432
   },
   "test": {
     "username": "root",

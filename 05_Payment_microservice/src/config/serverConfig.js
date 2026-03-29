@@ -4,6 +4,7 @@ dotenv.config();
 
 module.exports = {
   PORT: process.env.PORT,
+  INTERNAL_SERVER_TOKEN: process.env.INTERNAL_SERVER_TOKEN,
   MESSAGE_BROKER_URL:process.env.MESSAGE_BROKER_URL,
   REMINDER_BINDING_KEY: process.env.REMINDER_BINDING_KEY,
   EXCHANGE_NAME: process.env.EXCHANGE_NAME,
