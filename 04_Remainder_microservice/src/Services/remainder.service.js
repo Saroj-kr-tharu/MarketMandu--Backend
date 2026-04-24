@@ -6,16 +6,13 @@ const subscribeEvent = async (payload) => {
     let service = payload.service;
     let data = payload.data;
 
-    console.log(`service => ${service} '\n' data => ${data}`);
 
     switch (service) {
       case "CREATE_NOTIFICATION":
-      
         await notificationService.createService(data);
       break;
 
       default:
-        console.log("No  valid event recevied");
         break;
     }
 

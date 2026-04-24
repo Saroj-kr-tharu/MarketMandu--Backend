@@ -5,20 +5,13 @@ const  sendMessageToQueueService =   async (data, service) =>  {
     try {
       const channel = await createChannel();
       const payload = {
-        data: {
-          ...data,
-          
-        },
+        data: {...data},
         service: service ,
       };
-
-      console.log("Sending data to publish ", );
-
+      // console.log("Sending data to publish payload => ", payload );
       publishMessage(channel, REMINDER_BINDING_KEY, JSON.stringify(payload));
-
       return true;
 
-      
     } catch (error) {
       console.log(
         "Something went wrong in service layer (publish Message to Queue)"

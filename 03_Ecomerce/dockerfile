@@ -4,7 +4,6 @@ FROM node:18-alpine
 #Working Directory Define 
 WORKDIR /Ecommerce/backend
 
-
 # Copy the package to install 
 COPY package* ./
 

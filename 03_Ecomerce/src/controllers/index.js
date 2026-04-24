@@ -1,6 +1,5 @@
 
 module.exports = {
-    
-    adminController : require('./adminControllers'),
-    CustumerControllers: require('./custumerControllers')
+    adminCtrl : require('./admin.ctrl'),
+    CustumerCtrl: require('./custumer.ctrl')
 }

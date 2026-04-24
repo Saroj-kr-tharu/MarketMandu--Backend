@@ -2,49 +2,30 @@ const express = require("express");
 const router = express.Router();
 const path = require('path');
 
-const {
-    
-    eSewaController,
-    khaltiController,
-    stripeControllers
-} = require('../../Controllers/index')
+const {eSewaCtrl,khaltiCtrl,stripeCtrl, codCtrl} = require('../../Controllers/index')
+const {esewaMw,khaltiMw,stripeMw,internalSvcMw} = require('../../Middlewares/index');
 
-const {
-    eSewaValidation,
-    khaltiValidation,
-    stripeValidation, 
-    internalSvcMw
-} = require('../../Middlewares/index');
-const codController = require("../../Controllers/codControllers");
 
 
 router.get("/check", internalSvcMw.verifyToken ,(req, res) => {
-  return res.json({ message: "Payment Server is good to GO" });
+  return res.json({ message: "Payment Server is good to Go" });
 });
-
-
 
 // esewa 
-router.get("/esewa", function (req, res) {
-    const filePath = path.join(__dirname, '../../Utlis/test.html');
-    res.sendFile(filePath);
-});
-router.post("/initialize-esewa",internalSvcMw.verifyToken,  eSewaValidation.intilize, eSewaController.intilizeEsewa);
-router.get("/complete-payment",internalSvcMw.verifyToken,  eSewaValidation.completePayment, eSewaController.completePayment);
+router.post("/initialize-esewa",internalSvcMw.verifyToken,  esewaMw.intilize, eSewaCtrl.intilizeEsewa);
+router.get("/complete-payment",internalSvcMw.verifyToken,  esewaMw.completePayment, eSewaCtrl.completePayment);
 
 
 // khalti
-router.post("/epayment/initiate/", internalSvcMw.verifyToken,khaltiValidation.intilize, khaltiController.intilizeKhalti);
-router.get("/khalti/complete/payment",internalSvcMw.verifyToken, khaltiValidation.completePayment, khaltiController.completePayment);
+router.post("/epayment/initiate/", internalSvcMw.verifyToken,khaltiMw.intilize, khaltiCtrl.intilizeKhalti);
+router.get("/khalti/complete/payment",internalSvcMw.verifyToken, khaltiMw.completePayment, khaltiCtrl.completePayment);
 
-//stripe
-router.post("/stripe-initiate/",internalSvcMw.verifyToken, stripeValidation.intilize, stripeControllers.intilizeStripe);
-router.get("/stripe-complete-payment",internalSvcMw.verifyToken, stripeValidation.completePayment, stripeControllers.completePayment);
-router.get("/stripe-failed-payment",internalSvcMw.verifyToken, stripeValidation.completePayment, stripeControllers.failedPayment);
+//stripe 
+router.post("/stripe-initiate/",internalSvcMw.verifyToken, stripeMw.intilize, stripeCtrl.intilizeStripe);
+router.get("/stripe-complete-payment",internalSvcMw.verifyToken, stripeMw.completePayment, stripeCtrl.completePayment);
+router.get("/stripe-failed-payment",internalSvcMw.verifyToken, stripeMw.completePayment, stripeCtrl.failedPayment);
 
 //cod 
-router.post("/cod-initiate", internalSvcMw.verifyToken, codController.intilizeCod);
-
-
+router.post("/cod-initiate", internalSvcMw.verifyToken, codCtrl.intilizeCod);
 
 module.exports = router; 

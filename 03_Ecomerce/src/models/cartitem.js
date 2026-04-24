@@ -13,11 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       CartItem.belongsTo(models.Cart, {
-      foreignKey: "cartId",
-      onDelete: "CASCADE",
-        onUpdate: 'CASCADE',
-        as: "cart"
-    });
+        foreignKey: "cartId",
+        onDelete: "CASCADE",
+          onUpdate: 'CASCADE',
+          as: "cart"
+      });
 
       CartItem.belongsTo(models.Product, {
       foreignKey: "productId",

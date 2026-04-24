@@ -3,6 +3,7 @@ const amqp = require("amqplib");
 const {
   EXCHANGE_NAME,
   MESSAGE_BROKER_URL,
+  REMAINDER_QUEUE
 } = require("../config/server.config");
 
 const createChannel = async () => {
@@ -41,21 +42,17 @@ const publishMessage = async (channel, binding_key, message) => {
 
 const subscribeMessage = async (channel, service, binding_key) => {
   try {
-    const applicationQueue = await channel.assertQueue('REMINDER_EMAIL_QUEUE')
-
-    channel.bindQueue(applicationQueue.queue, EXCHANGE_NAME, binding_key);
-
-    channel.consume(applicationQueue.queue, (msg) => {
-     
-      const payload = JSON.parse(msg.content.toString());
-      console.log("payload => ", payload)
-      service(payload);
-
-      channel.ack(msg);
-    });
-  } catch (error) {
-    throw error;
-  }
+        const applicationQueue = await channel.assertQueue(REMAINDER_QUEUE)
+        channel.bindQueue(applicationQueue.queue, EXCHANGE_NAME, binding_key);
+        channel.consume(applicationQueue.queue, (msg) => {
+        const payload = JSON.parse(msg.content.toString());
+        // console.log("payload => ", payload)
+        service(payload);
+        channel.ack(msg);
+      });
+    } catch (error) {
+      throw error;
+    }
 };
 
 module.exports = {

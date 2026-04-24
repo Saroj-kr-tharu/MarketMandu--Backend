@@ -31,9 +31,8 @@ class userService extends CurdService {
                 const isValid = await BcryptHelper.checkPasswordService(password, hashpassword );
                 
                 if (!isValid)  throw new Error("Invalid Credentials");
-                console.log("user => ",infoUser?.dataValues )
+                // console.log("user => ",infoUser?.dataValues )
                 if (infoUser?.dataValues?.isActive)  throw new Error("You are Ban User");
-
 
             // access token
             const token = await JwtHelper.createToken({...data, id: infoUser?.dataValues?.id,role: infoUser?.dataValues?.role});
@@ -111,7 +110,6 @@ class userService extends CurdService {
             
             const infoUser = await USER_REPO.getById(isvalid.data.id); 
             
-            
             if(!infoUser || infoUser?.dataValues?.refreshToken !== data) 
                     throw new Error("invalid user or refresh token");
                 
@@ -134,12 +132,14 @@ class userService extends CurdService {
                 });
 
         
-
+            // console.log('user info from genrefreshtoken => ', user)
             const response = {
                 email: user.email,
                 role: user.role,
                 username: user.username,
                 jwt: token,
+                id: user.id,
+                isActive: user.isActive
             }
             
             return response;

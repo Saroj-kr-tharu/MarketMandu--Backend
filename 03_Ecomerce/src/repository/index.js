@@ -1,9 +1,8 @@
 
 module.exports = {
     
-    USER_REPO : require('./userRepo'),
-    Product_Repo : require('./productRepo'),
-    Orders_Repo : require('./ordersRepo'),
-    OrdersItem_Repo : require('./ordersItemRepo'),
-    OTP_Repo : require('./otpRepo'),
+    USER_REPO : require('./user.repo'),
+    Product_Repo : require('./product.repo'),
+    Orders_Repo : require('./orders.repo'),
+    OrdersItem_Repo : require('./orders.item.repo'),
 }

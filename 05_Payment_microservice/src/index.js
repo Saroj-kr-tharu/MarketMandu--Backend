@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const Routes = require('./Route/index');
 const {PORT} = require('./config/serverConfig');
+const { errorMw } = require('./Middlewares');
 
 
 const serverSetupAndStart = () => {
@@ -12,13 +13,12 @@ const serverSetupAndStart = () => {
     // middlewares
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(bodyParser.json());
+
     app.use('/api', Routes);
+    app.use(errorMw);
 
     app.listen(PORT, () => {
-        console.log(`Server is Running at port http://localhost/${PORT}`);
-        // curd.write(newData);
-
-        // curd.updateCom(4, {complete: true});
+        console.log(`Payment Server :  http://localhost:${PORT}`);
     })
 }
 

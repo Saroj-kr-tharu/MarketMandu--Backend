@@ -1,160 +1,124 @@
 const EmailTemplate = (data = {}) => {
     const { 
-        username = "Player", 
+        username = "Customer", 
         body = "", 
-        app_url = "#",
+        app_url = "https://marketmandu.com",
         eventType = "USER_REGISTERED",
-        subject = "Power11 Notification"
+        subject = "Marketmandu Notification",
+        currency = "NPR"
     } = data;
-    
-    // Replace all placeholders in body
-    let processedBody = body
-        .replace(/\{\{username\}\}/g, username)
-        .replace(/\{\{amount\}\}/g, data.amount || '')
-        .replace(/\{\{transaction_id\}\}/g, data.transaction_id || '')
-        .replace(/\{\{rank\}\}/g, data.rank || '')
-        .replace(/\{\{reset_link\}\}/g, data.reset_link || '')
-        .replace(/\{\{withdraw_amount\}\}/g, data.withdraw_amount || '')
-        .replace(/\{\{reason\}\}/g, data.reason || '');
-    
-    // Convert plain text to HTML with proper formatting
-    const formattedBody = processedBody
+
+    // 1. Formatting Helpers
+    const formatPrice = (val) => val ? Number(val).toFixed(2) : "0.00";
+    const formatDate = (val) => val ? new Date(val).toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    }) : "Soon";
+
+    // Create a "Friendly Name" (removes @domain.com if username is an email)
+    const friendlyName = (data.customerName || username || "Customer").split('@')[0];
+
+    // 2. Define all possible placeholders
+    const replacements = {
+        // Identity (Handles both tags used in your images)
+        username: friendlyName,
+        customerName: friendlyName,
+        
+        // Order Info
+        orderId: data.orderId || 'N/A',
+        currency: currency,
+        amount: formatPrice(data.amount),
+        transactionId: data.transactionId || 'N/A',
+        deliveryEstimatedDate: formatDate(data.deliveryEstimatedDate),
+        shipping_fee: formatPrice(data.shipping_fee),
+        tax: formatPrice(data.tax),
+        
+        // Links
+        reset_link: data.reset_link || app_url,
+        app_url: app_url
+    };
+
+    // 3. Dynamic Replacement Loop
+    let processedBody = body;
+    Object.keys(replacements).forEach(key => {
+        const placeholder = new RegExp(`{{${key}}}`, 'g');
+        processedBody = processedBody.replace(placeholder, replacements[key]);
+    });
+
+    // 4. Convert text body to styled HTML
+    const formattedBodyContent = processedBody
         .split('\n')
         .map(line => {
             line = line.trim();
-            if (!line) return '<div style="height: 8px;"></div>';
-            if (line.startsWith('- ')) {
-                return `<div style="margin-left: 20px; margin-bottom: 6px; color: #cbd5f5;">• ${line.substring(2)}</div>`;
+            if (!line) return '<div style="height: 12px;"></div>';
+            
+            // Welcome bullet points or Order summary items
+            if (line.startsWith('•') || line.startsWith('*') || line.startsWith('-')) {
+                return `<div style="padding: 4px 0; padding-left: 20px; color: #475569; position: relative;">• ${line.replace(/^[•*-]\s*/, '')}</div>`;
             }
+            // Headers
+            if (line.endsWith(':') || line === "Happy shopping!") {
+                return `<p style="margin: 20px 0 10px; color: #1e293b; font-weight: 700; font-size: 16px;">${line}</p>`;
+            }
+            // Signature
             if (line.startsWith('—')) {
-                return `<p style="margin: 12px 0 0; font-weight: 700; color: #ffffff;">${line}</p>`;
+                return `<p style="margin-top: 25px; color: #64748b; font-style: italic; border-top: 1px solid #f1f5f9; padding-top: 15px;">${line}</p>`;
             }
-            if (line.includes('Need help?') || line.includes('Questions?')) {
-                return `<p style="margin: 4px 0 0; color: #94a3b8;">${line}</p>`;
+            // Help text
+            if (line.includes('Need help?')) {
+                return `<p style="margin-top: 15px; color: #64748b; font-size: 14px;">${line}</p>`;
             }
-            if (line.includes('What you can do') || line.includes(':')) {
-                return `<p style="margin: 16px 0 8px; color: #ffffff; font-weight: 700;">${line}</p>`;
+            // Greeting
+            if (line.startsWith('Hey') || line.startsWith('Hi')) {
+                return `<p style="margin: 0 0 15px; color: #1e293b; font-size: 18px; font-weight: 800;">${line}</p>`;
             }
-            if (line.startsWith('Hey ') || line.startsWith('Hi ')) {
-                return `<p style="margin: 0 0 12px; color: #e5e7eb; font-size: 17px;">${line}</p>`;
-            }
-            if (line.includes('Let the games') || line.includes('Best regards') || line.includes('Stay safe')) {
-                return `<p style="margin: 12px 0 0; color: #cbd5f5;">${line}</p>`;
-            }
-            return `<p style="margin: 0 0 12px; color: #cbd5f5;">${line}</p>`;
+            return `<p style="margin: 0 0 10px; color: #475569; line-height: 1.6;">${line}</p>`;
         })
         .join('');
-    
-    // Dynamic header emoji based on event type
-    const getHeaderEmoji = () => {
-        switch(eventType) {
-            case 'USER_REGISTERED': return '⚡';
-            case 'FORGOT_PASSWORD': return '🔒';
-            case 'RESET_PASSWORD': return '✅';
-            case 'WALLET_CREDITED': return '💰';
-            case 'WITHDRAW_REQUESTED': return '📤';
-            case 'WITHDRAW_APPROVED': return '✅';
-            case 'WITHDRAW_REJECTED': return '❌';
-            default: return '⚡';
-        }
-    };
-    
-    // Dynamic CTA based on event type
-    const getCTA = () => {
-        switch(eventType) {
-            case 'USER_REGISTERED': 
-                return { text: 'Enter the Arena ⚡', show: true };
-            case 'FORGOT_PASSWORD': 
-                return { text: 'Reset Password 🔒', show: true, url: data.reset_link };
-            case 'RESET_PASSWORD': 
-                return { text: 'Login Now ✅', show: true };
-            case 'WALLET_CREDITED': 
-                return { text: 'View Wallet 💰', show: true };
-            case 'WITHDRAW_REQUESTED': 
-                return { text: 'View Status 📊', show: true };
-            case 'WITHDRAW_APPROVED': 
-                return { text: 'View Transaction ✅', show: true };
-            case 'WITHDRAW_REJECTED': 
-                return { text: 'Contact Support 💬', show: true };
-            default: 
-                return { text: 'Go to Dashboard 🎯', show: true };
-        }
-    };
-    
-    const cta = getCTA();
-    const ctaUrl = cta.url || app_url;
-    
+
     return `
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${subject}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body style="margin: 0; padding: 0; background-color: #0b1020;">
-    <!-- Email Container -->
-    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #0b1020; font-family: 'Poppins', Arial, sans-serif;">
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: 'Inter', Arial, sans-serif;">
+    <table role="presentation" style="width: 100%; background-color: #f8fafc;">
         <tr>
-            <td style="padding: 20px 0;">
-                <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                    
-                    <!-- Header -->
+            <td style="padding: 40px 0;">
+                <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
                     <tr>
-                        <td style="background: linear-gradient(135deg, #ef4444 0%, #f59e0b 50%, #22c55e 100%); padding: 40px 0; text-align: center; border-radius: 18px 18px 0 0;">
-                            <div style="background: rgba(0,0,0,0.25); padding: 24px; margin: 0 auto; width: fit-content; border-radius: 14px;">
-                                <div style="font-size: 52px; margin-bottom: 8px;">${getHeaderEmoji()}</div>
-                                <h1 style="margin: 0; color: #ffffff; font-size: 36px; font-weight: 800; letter-spacing: 1px;">
-                                    Power11
-                                </h1>
-                                <p style="margin: 6px 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">
-                                    Build • Battle • Win
-                                </p>
-                            </div>
+                        <td style="padding: 40px 40px 20px 40px; text-align: center;">
+                            <h1 style="margin: 0; color: #e11d48; font-size: 32px; font-weight: 800; letter-spacing: -1px;">Marketmandu</h1>
+                            <p style="margin: 8px 0 0; color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Your Ultimate Marketplace</p>
                         </td>
                     </tr>
 
-                    <!-- Body -->
                     <tr>
-                        <td style="padding: 32px 30px 28px 30px;">
-                            <div style="color: #cbd5f5; font-size: 16px; line-height: 1.5;">
-                                ${formattedBody}
+                        <td style="padding: 20px 40px 40px 40px;">
+                            <div style="font-size: 15px; color: #475569;">
+                                ${formattedBodyContent}
                             </div>
 
-                            <!-- CTA -->
-                            ${cta.show ? `
-                            <div style="text-align: center; margin: 24px 0 0 0;">
-                                <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #ef4444, #f59e0b); color: #ffffff; padding: 16px 44px; text-decoration: none; border-radius: 10px; font-size: 16px; font-weight: 700; box-shadow: 0 8px 20px rgba(239,68,68,0.4);">
-                                    ${cta.text}
+                            <div style="text-align: center; margin-top: 35px;">
+                                <a href="${app_url}" style="display: inline-block; background-color: #e11d48; color: #ffffff; padding: 16px 45px; text-decoration: none; border-radius: 10px; font-size: 16px; font-weight: 700; box-shadow: 0 4px 12px rgba(225,29,72,0.2);">
+                                    ${eventType === 'USER_REGISTERED' ? 'Visit Store' : 'View Order'}
                                 </a>
                             </div>
-                            ` : ''}
                         </td>
                     </tr>
 
-                    <!-- Footer -->
                     <tr>
-                        <td style="padding: 26px; background-color: #020617; border-radius: 0 0 18px 18px; text-align: center;">
-                            <p style="margin: 0 0 8px; color: #94a3b8; font-size: 13px;">
-                                Need help? Reach us at 
-                                <a href="mailto:support@power11.com" style="color: #f59e0b; text-decoration: none;">
-                                    support@power11.com
-                                </a>
-                            </p>
-                            <p style="margin: 0; color: #64748b; font-size: 12px;">
-                                © 2025 Power11. All rights reserved.
-                            </p>
+                        <td style="padding: 25px 40px; background-color: #f8fafc; text-align: center; border-top: 1px solid #f1f5f9;">
+                            <p style="margin: 0; color: #94a3b8; font-size: 12px;">© 2026 Marketmandu. All rights reserved.</p>
                         </td>
                     </tr>
-
                 </table>
             </td>
         </tr>
     </table>
 </body>
-</html>
-`;
+</html>`;
 };
 
 module.exports = EmailTemplate;

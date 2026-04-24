@@ -11,11 +11,13 @@ const app = express();
 const limiter = rateLimit({
   windowMs: 2 * 60 * 1000,
   max: 50,
+  skip: (req) => req.method === "OPTIONS"
 });
 
 app.use(morgan("combined"));
-app.use(limiter);
 
+
+// console.log("for=> ", FORTEND_URL)
 
 app.use(
   cors({
@@ -29,12 +31,12 @@ app.use(
       }
     },
     credentials: true,
-    methods: ['GET', 'POST', 'DELETE', 'PATCH', 'OPTIONS'], // Add OPTIONS
+    methods: ['GET', 'POST', 'DELETE', 'PATCH', 'OPTIONS'], 
     allowedHeaders: ['Content-Type', 'Authorization', 'x-access-token'],
     optionsSuccessStatus: 200 
   })
 );
-
+app.use(limiter);
 
 app.use("/auth", authRoutes);
 app.use("/payment", paymentRoutes);
@@ -44,7 +46,7 @@ app.use("/remainder", remainderRoutes);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/ping', (req, res) => {
+app.get('/check', (req, res) => {
   res.status(200).json({ message: 'api gateway is good to go' });
 });
 

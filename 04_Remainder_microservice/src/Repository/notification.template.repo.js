@@ -9,8 +9,12 @@ class NotificationTemplateRepo extends CurdRepo {
 
   async getBydata(data) {
     try {
-      const res = await this.model.findOne({ where: data });
+      const res = await this.model.findOne({ where: data,
+        logging: (sql) => console.log("The Actual SQL Query:", sql)
+       });
+      console.log("data => ", data , "res => ", res )
       return res;
+
     } catch (error) {
       console.log("Something went wrong in Repo level (getBydata) ");
       throw error;

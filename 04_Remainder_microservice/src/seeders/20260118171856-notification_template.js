@@ -11,17 +11,17 @@ module.exports = {
         {
           eventType: 'USER_REGISTERED',
           channel: 'EMAIL',
-          subject: 'Welcome to Power11 - Your Arena Awaits!',
+          subject: 'Welcome to MarketMandu – Your Shopping Journey Starts Here!',
           body:
             'Hey {{username}},\n\n' +
-            'Welcome to Power11! This is where strategy meets skill.\n\n' +
-            'What you can do:\n' +
-            '- Create your fantasy team\n' +
-            '- Join daily & mega contests\n' +
-            '- Win exciting rewards\n\n' +
-            'Let the games begin!\n\n' +
-            '— Team Power11\n\n' +
-            'Need help? support@power11.com',
+            'Welcome to MarketMandu! We’re thrilled to have you join our community.\n\n' +
+            'Here is what you can do right now:\n' +
+            '- Discover curated products across all categories\n' +
+            '- Add your must-haves to your wishlist\n' +
+            '- Enjoy a fast, secure, and seamless checkout\n\n' +
+            'Happy shopping!\n\n' +
+            '— Team MarketMandu\n\n' +
+            'Need help? support@marketmandu.com',
           isActive: true,
           version: 1,
           createdAt: now,
@@ -31,14 +31,14 @@ module.exports = {
         {
           eventType: 'FORGOT_PASSWORD',
           channel: 'EMAIL',
-          subject: 'Reset Your Power11 Password',
+          subject: 'Reset Your MarketMandu Password',
           body:
             'Hey {{username}},\n\n' +
             'We received a request to reset your password.\n\n' +
             'Reset link:\n{{reset_link}}\n\n' +
             'This link will expire in 1 hour.\n\n' +
             'If this was not you, please ignore this email.\n\n' +
-            '— Team Power11',
+            '— Team MarketMandu',
           isActive: true,
           version: 1,
           createdAt: now,
@@ -48,12 +48,12 @@ module.exports = {
         {
           eventType: 'RESET_PASSWORD',
           channel: 'EMAIL',
-          subject: 'Your Power11 Password Was Reset',
+          subject: 'Your MarketMandu Password Was Reset',
           body:
             'Hey {{username}},\n\n' +
-            'Your Power11 account password has been successfully reset.\n\n' +
+            'Your MarketMandu account password has been successfully reset.\n\n' +
             'If you did not perform this action, please contact support immediately.\n\n' +
-            '— Team Power11',
+            '— Team MarketMandu',
           isActive: true,
           version: 1,
           createdAt: now,
@@ -61,99 +61,28 @@ module.exports = {
         },
 
         {
-          eventType: 'WALLET_CREDITED',
+          eventType: 'ORDER_CONFIRM',
           channel: 'EMAIL',
-          subject: 'Your Power11 Wallet Has Been Credited',
+          subject: 'Order Confirmed!  #{{orderId}} MarketMandu',
           body:
-            'Hey {{username}},\n\n' +
-            'Your wallet has been credited successfully.\n\n' +
-            'Details:\n' +
-            '- Amount: {{amount}}\n' +
-            '- Transaction ID: {{transaction_id}}\n\n' +
-            'You can now join contests or tournaments.\n\n' +
-            '— Team Power11',
+            'Hey {{customerName}},\n\n' +
+            'Thank you for your purchase! We’ve received your payment and your order is now being processed.\n\n' +
+            'Order Summary:\n' +
+            '- Order ID: {{orderId}}\n' +
+            '- Total Amount: {{currency}} {{amount}}\n' +
+            '- Transaction ID: {{transactionId}}\n' +
+            '- Estimated Delivery: {{deliveryEstimatedDate}}\n\n' +
+            'Shipping & Taxes:\n' +
+            '- Shipping Fee: {{currency}} {{shipping_fee}}\n' +
+            '- Tax: {{currency}} {{tax}}\n\n' +
+            'We will notify you as soon as your items are on their way!\n\n' +
+            '— Team MarketMandu',
           isActive: true,
           version: 1,
           createdAt: now,
           updatedAt: now
-        },
+        }
 
-        {
-          eventType: 'WITHDRAW_REQUESTED',
-          channel: 'EMAIL',
-          subject: 'Withdrawal Request Received',
-          body:
-            'Hey {{username}},\n\n' +
-            'We have received your withdrawal request.\n\n' +
-            'Details:\n' +
-            '- Amount: {{withdraw_amount}}\n' +
-            '- Transaction ID: {{transaction_id}}\n' +
-            '- Status: Processing\n\n' +
-            'Processing usually takes 24–48 hours.\n\n' +
-            '— Team Power11',
-          isActive: true,
-          version: 1,
-          createdAt: now,
-          updatedAt: now
-        },
-
-        {
-          eventType: 'WITHDRAW_APPROVED',
-          channel: 'EMAIL',
-          subject: 'Withdrawal Approved',
-          body:
-            'Hey {{username}},\n\n' +
-            'Good news! Your withdrawal request has been approved.\n\n' +
-            'Details:\n' +
-            '- Amount: {{withdraw_amount}}\n' +
-            '- Transaction ID: {{transaction_id}}\n\n' +
-            'The amount will be credited to your bank within 2–5 business days.\n\n' +
-            '— Team Power11',
-          isActive: true,
-          version: 1,
-          createdAt: now,
-          updatedAt: now
-        },
-
-        {
-          eventType: 'WITHDRAW_REJECTED',
-          channel: 'EMAIL',
-          subject: 'Withdrawal Request Update',
-          body:
-            'Hey {{username}},\n\n' +
-            'Unfortunately, your withdrawal request was rejected.\n\n' +
-            'Details:\n' +
-            '- Amount: {{withdraw_amount}}\n' +
-            '- Transaction ID: {{transaction_id}}\n' +
-            '- Reason: {{reason}}\n\n' +
-            'The amount has been returned to your wallet.\n\n' +
-            '— Team Power11',
-          isActive: true,
-          version: 1,
-          createdAt: now,
-          updatedAt: now
-        },
-
-        {
-          eventType: 'CONTEST_WON',
-          channel: 'EMAIL',
-          subject: 'Congratulations! You Won a Contest',
-          body:
-            'Hey {{username}},\n\n' +
-            'Congratulations on winning your contest!\n\n' +
-            'Winning Details:\n' +
-            '- Rank: {{rank}}\n' +
-            '- Amount: {{amount}}\n' +
-            '- Transaction ID: {{transaction_id}}\n\n' +
-            'The winnings have been credited to your wallet.\n\n' +
-            '— Team Power11',
-          isActive: true,
-          version: 1,
-          createdAt: now,
-          updatedAt: now
-        },
-
-        
       ],
       {}
     );
@@ -168,11 +97,7 @@ module.exports = {
             'USER_REGISTERED',
             'FORGOT_PASSWORD',
             'RESET_PASSWORD',
-            'WALLET_CREDITED',
-            'WITHDRAW_REQUESTED',
-            'WITHDRAW_APPROVED',
-            'WITHDRAW_REJECTED',
-            'CONTEST_WON'
+            'ORDER_CONFIRM', 
           ]
         }
       },

@@ -5,7 +5,7 @@ const { PRIVATEJWT,  RefreshPRIVATEJWT } = require("../config/server.config");
 
 class JWT {
 
-  async createToken(data, time= '10m') {
+  async createToken(data, time= '1m') {
     try {
 
       

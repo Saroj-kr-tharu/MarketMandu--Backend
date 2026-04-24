@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE'
       });
 
+      Order.belongsTo(models.User, {
+        foreignKey: 'userId', 
+        as: 'user'
+      })
      
       
     }
@@ -22,9 +26,12 @@ module.exports = (sequelize, DataTypes) => {
   Order.init({
 
     userId: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.UUID,
           allowNull: false,
-        
+          references: {
+            model: 'Users', 
+            key: 'id'
+          },
       },
 
       

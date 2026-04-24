@@ -5,10 +5,9 @@ const { PORT, REMINDER_BINDING_KEY, } = require("./config/server.config");
 const appRoute = require("./Routes/index");
 const setUptask = require("./utlis/jobsSchedule");
 
-
-
 const { createChannel, subscribeMessage } = require("./utlis/messageQueue");
 const { subscribeEvent } = require("./Services/remainder.service");
+const errorMiddleware = require("./Middlewares/error.mw");
 
 
 
@@ -18,7 +17,9 @@ const serverSetupAndStartUp = async () => {
   // middlewares
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
+  
   app.use("/api", appRoute);
+  app.use(errorMiddleware);
 
   const channel = await createChannel();
   subscribeMessage(channel, subscribeEvent, REMINDER_BINDING_KEY);

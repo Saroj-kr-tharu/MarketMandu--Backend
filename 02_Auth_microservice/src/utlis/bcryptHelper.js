@@ -1,21 +1,37 @@
 const bcrypt = require("bcrypt");
 
+const { salt } = require("../config/server.config");
+const AppError = require("./Errors/app.error")
+const  HttpsStatusCodes = require('../utlis/Errors/https_codes')
+
 
 class Bcrypt_helper_class {
   async checkPasswordService(plainpasword, hash) {
     try {
 
-      console.log('data => ', plainpasword, hash)
+      // console.log('data => ', plainpasword, hash)
       const match = bcrypt.compareSync(plainpasword, hash);
       if (!match) 
-        throw new Error('Creditals Invalid')
-        
+          throw new AppError(
+                        'bcrypt Error',
+                        `Creditals invlaid`,
+                        ' Creditals invlaid Issue in verify Creaditials  in bcryptHelper in  Bcrypt_helper_class function ',
+                        HttpsStatusCodes.ServerErrosCodes.INTERNAL_SERVER_ERROR
+
+                    );
      
       return match;
     } catch (error) {
-        console.log("Something went wrong in bcrypt helper layer (checkPasswordService)");
-        throw new Error('Something is wrong in bcrypt Error')
-      
+        console.log(
+          "Something went wrong in bcrypt helper layer (checkPasswordService)"
+        );
+        throw new AppError(
+                          'bcrypt Error',
+                          `something is wrong`,
+                          'Issue in verify Creaditials  in bcryptHelper in  Bcrypt_helper_class function ',
+                          HttpsStatusCodes.ServerErrosCodes.INTERNAL_SERVER_ERROR
+
+                      );
       }
   }
 

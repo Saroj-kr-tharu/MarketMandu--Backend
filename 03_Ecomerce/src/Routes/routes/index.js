@@ -2,9 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 
-const { adminController,CustumerControllers } = require('../../controllers/index')
+const { CustumerCtrl, adminCtrl } = require('../../controllers/index')
 const { internalSvcMw } = require('../../middlewares/index')
-
 
 
 router.get("/check", internalSvcMw.verifyToken ,(req, res) => {
@@ -14,49 +13,43 @@ router.get("/check", internalSvcMw.verifyToken ,(req, res) => {
 
 // admin 
 // admin/products
-router.post( "/products/add", internalSvcMw.verifyToken ,  adminController.addProduct );
-router.delete( "/products/delete",  internalSvcMw.verifyToken , adminController.deleteProduct );
-router.get( "/products/getall",  internalSvcMw.verifyToken , CustumerControllers.getProductall );
-router.delete( "/products/bulkdelete",  internalSvcMw.verifyToken , adminController.bulkdeleteProduct );
-router.patch( "/products/update",  internalSvcMw.verifyToken , adminController.editProduct );
+router.post( "/products/add", internalSvcMw.verifyToken ,  adminCtrl.addProduct );
+router.delete( "/products/delete",  internalSvcMw.verifyToken , adminCtrl.deleteProduct );
+router.get( "/products/getall",  internalSvcMw.verifyToken , CustumerCtrl.getProductall );
+router.delete( "/products/bulkdelete",  internalSvcMw.verifyToken , adminCtrl.bulkdeleteProduct );
+router.patch( "/products/update",  internalSvcMw.verifyToken , adminCtrl.editProduct );
 
 //admin/orders
-router.get( "/orders",  internalSvcMw.verifyToken , adminController.getAllOrders );
-router.get( "/ordersAll", internalSvcMw.verifyToken ,  adminController.getAllOrders );
-router.get( "/getOrderAllWithoutFilter", internalSvcMw.verifyToken ,  adminController.getAllOrdersWithoutFilter );
-router.patch( "/orders/update", internalSvcMw.verifyToken ,  adminController.editOrders );
+router.get( "/orders",  internalSvcMw.verifyToken , adminCtrl.getAllOrders );
+router.get( "/ordersAll", internalSvcMw.verifyToken ,  adminCtrl.getAllOrders );
+router.get( "/getOrderAllWithoutFilter", internalSvcMw.verifyToken ,  adminCtrl.getAllOrdersWithoutFilter );
+router.patch( "/orders/update", internalSvcMw.verifyToken ,  adminCtrl.editOrders ); 
 
-
-//admin/users
-router.get( "/users", internalSvcMw.verifyToken , adminController.getAllUsers );
-router.get( "/userswithoutfilter", internalSvcMw.verifyToken ,  adminController.getAllUserWithoutFilter );
-router.patch( "/users/update", internalSvcMw.verifyToken ,  adminController.updateUserById );
-router.patch( "/users/bulkupdate", internalSvcMw.verifyToken ,  adminController.BulkupdateUsers );
 
 // custumer 
 // custumer/product
-router.get( "/products",internalSvcMw.verifyToken ,internalSvcMw.verifyToken ,  CustumerControllers.getProduct );
-router.get( "/product",internalSvcMw.verifyToken ,internalSvcMw.verifyToken ,  CustumerControllers.getProductById ); 
+router.get( "/products",internalSvcMw.verifyToken ,internalSvcMw.verifyToken ,  CustumerCtrl.getProduct );
+router.get( "/product",internalSvcMw.verifyToken ,internalSvcMw.verifyToken ,  CustumerCtrl.getProductById ); 
 
 // custumer/orders
-router.post( "/orders/addOrder",  internalSvcMw.verifyToken , CustumerControllers.addOrders );
-router.get( "/orders/getByUser",  internalSvcMw.verifyToken , CustumerControllers.getOrdersByUserId );
-router.post( "/orders/orderIntial", internalSvcMw.verifyToken ,  CustumerControllers.orderInitial );
-router.get( "/orders/orderFinal", internalSvcMw.verifyToken ,  CustumerControllers.orderFinal );
-router.get( "/orders/orderByNO",  internalSvcMw.verifyToken , CustumerControllers.getDetailOrderByOrderno );
+router.post( "/orders/addOrder",  internalSvcMw.verifyToken , CustumerCtrl.addOrders );
+router.get( "/orders/getByUser",  internalSvcMw.verifyToken , CustumerCtrl.getOrdersByUserId );
+router.post( "/orders/orderIntial", internalSvcMw.verifyToken ,  CustumerCtrl.orderInitial );
+router.get( "/orders/orderFinal", internalSvcMw.verifyToken ,  CustumerCtrl.orderFinal );
+router.get( "/orders/orderByNO",  internalSvcMw.verifyToken , CustumerCtrl.getDetailOrderByOrderno );
 
 // custumer / cart 
-router.post( "/cart/add",  internalSvcMw.verifyToken ,CustumerControllers.addItemCart);
-router.delete( "/cart/delete", internalSvcMw.verifyToken ,  CustumerControllers.clearCart );
-router.post( "/cart/getCart", internalSvcMw.verifyToken ,  CustumerControllers.getCartById );
-router.delete( "/cart/removeItem",  internalSvcMw.verifyToken , CustumerControllers.removeItemCart );
-router.post( "/cart/bulkdelete", internalSvcMw.verifyToken ,  CustumerControllers.BulkremoveItemCart );
-router.patch( "/cart/updateItem",  internalSvcMw.verifyToken , CustumerControllers.updateItemCart );
-router.patch( "/cart/bulkupdate",  internalSvcMw.verifyToken , CustumerControllers.updateItemsBluk );
+router.post( "/cart", internalSvcMw.verifyToken ,  CustumerCtrl.getCartById );
+router.delete( "/cart", internalSvcMw.verifyToken ,  CustumerCtrl.clearCart );
+
+router.post( "/cart/items",  internalSvcMw.verifyToken ,CustumerCtrl.addItemCart);
+router.delete( "/cart/items", internalSvcMw.verifyToken ,  CustumerCtrl.BulkremoveItemCart );
+router.patch( "/cart/items",  internalSvcMw.verifyToken , CustumerCtrl.updateItemsBluk );
+
+router.delete( "/cart/items/:itemId",  internalSvcMw.verifyToken , CustumerCtrl.removeItemCart );
+router.patch( "/cart/items/:itemId",  internalSvcMw.verifyToken , CustumerCtrl.updateItemCart );
+ 
 
 //custemer /checkout
-router.get ( "/cart/checkout", internalSvcMw.verifyToken ,  CustumerControllers.checkoutCart );
-
- 
- 
+router.get ( "/cart/checkout", internalSvcMw.verifyToken ,  CustumerCtrl.checkoutCart );
 module.exports = router;

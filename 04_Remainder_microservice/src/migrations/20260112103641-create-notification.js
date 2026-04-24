@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       userId: {
-          type: Sequelize.STRING,
+          type: Sequelize.UUID,
           allowNull: false,
           index: true
         },
@@ -21,14 +21,10 @@ module.exports = {
 
       eventType: {
         type: Sequelize.ENUM(
-          'USER_REGISTERED',
+         'USER_REGISTERED',
           'FORGOT_PASSWORD',
           'RESET_PASSWORD',
-          'WALLET_CREDITED',
-          'WITHDRAW_REQUESTED',
-          'WITHDRAW_APPROVED',
-          'WITHDRAW_REJECTED',
-          'CONTEST_WON'
+          'ORDER_CONFIRM',
         ),
         allowNull: false
       },

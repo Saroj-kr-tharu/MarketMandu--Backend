@@ -12,13 +12,9 @@ module.exports = {
       eventType: {
           type: Sequelize.ENUM(
             'USER_REGISTERED',
-            'FORGOT_PASSWORD',
-            'RESET_PASSWORD',
-            'WALLET_CREDITED',
-            'WITHDRAW_REQUESTED',
-            'WITHDRAW_APPROVED',
-            'WITHDRAW_REJECTED',
-            'CONTEST_WON'
+          'FORGOT_PASSWORD',
+          'RESET_PASSWORD',
+          'ORDER_CONFIRM',
             
           ),
           allowNull: false

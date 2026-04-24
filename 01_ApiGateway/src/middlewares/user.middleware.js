@@ -66,6 +66,7 @@ class UserMiddleware {
 
   async verifyToken(req, res, next) {
     const token = req?.headers["x-access-token"];
+    console.log('token => ', token)
     if (!token) {
       return res.status(ClientErrorsCodes.BAD_REQUEST).json({
         data: {},
@@ -74,22 +75,7 @@ class UserMiddleware {
       });
     }
 
-    try {
-      const response = await JwtHelper.verifyToken(token);
-
-      if (response) return next();
-      return res.status(ClientErrorsCodes.UNAUTHORIZED).json({
-        data: {},
-        message: "Invalid token or Token expired",
-        success: false,
-      });
-    } catch (error) {
-      return res.status(ClientErrorsCodes.UNAUTHORIZED).json({
-        data: {},
-        message: "Invalid token or Token expired",
-        success: false,
-      });
-    }
+   
   }
 }
 

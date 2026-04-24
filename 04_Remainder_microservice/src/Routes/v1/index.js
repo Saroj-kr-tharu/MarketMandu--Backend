@@ -6,7 +6,7 @@ const internalSvcMw = require("../../Middlewares/internal.service.middleware")
 
 
 router.get("/check", internalSvcMw.verifyToken ,(req, res) => {
-  return res.json({ message: "Remainder Server is good to GO" });
+  return res.json({ message: "Remainder Server is good to Go" });
 });
 
 router.post("/template", internalSvcMw.verifyToken,     templateCtrl.createCtrl);

@@ -13,8 +13,6 @@ const ecommerceProxy = createProxyMiddleware({
   logLevel: "debug", 
 });
 
-
-
 router.get("/check", ecommerceProxy);
 
 
@@ -33,14 +31,10 @@ router.get( "/getOrderAllWithoutFilter",  userMw.verifyAdmin,  ecommerceProxy );
 router.patch( "/orders/update",  userMw.verifyAdmin,  ecommerceProxy );
 
 
-//admin/users
-router.get( "/users",  userMw.verifyAdmin,  ecommerceProxy );
-router.get( "/userswithoutfilter",  userMw.verifyAdmin,  ecommerceProxy );
-router.patch( "/users/update",  userMw.verifyAdmin,  ecommerceProxy );
-router.patch( "/users/bulkupdate",  userMw.verifyAdmin,  ecommerceProxy );
+
 
 // custumer 
-// custumer/product
+// custumer/product 
 router.get( "/products",    ecommerceProxy );
 router.get( "/product",    ecommerceProxy ); 
 
@@ -48,17 +42,17 @@ router.get( "/product",    ecommerceProxy );
 router.post( "/orders/addOrder",  userMw.verifyUser,  ecommerceProxy  );
 router.get( "/orders/getByUser",  userMw.verifyUser,  ecommerceProxy );
 router.post( "/orders/orderIntial",  userMw.verifyUser,  ecommerceProxy );
-router.get( "/orders/orderFinal",   userMw.verifyUser,  ecommerceProxy);
+router.get( "/orders/orderFinal",     ecommerceProxy);
 router.get( "/orders/orderByNO",   userMw.verifyUser,  ecommerceProxy);
 
 // custumer / cart 
-router.post( "/cart/add",userMw.verifyUser,  ecommerceProxy);
-router.delete( "/cart/delete", userMw.verifyUser,  ecommerceProxy );
-router.post( "/cart/getCart",  userMw.verifyUser,  ecommerceProxy );
-router.delete( "/cart/removeItem",  userMw.verifyUser,  ecommerceProxy );
-router.post( "/cart/bulkdelete",  userMw.verifyUser,  ecommerceProxy );
-router.patch( "/cart/updateItem",  userMw.verifyUser,  ecommerceProxy );
-router.patch( "/cart/bulkupdate",  userMw.verifyUser,  ecommerceProxy );
+router.post( "/cart", userMw.verifyUser,  ecommerceProxy );
+router.delete( "/cart", userMw.verifyUser,  ecommerceProxy );
+router.post( "/cart/items", userMw.verifyUser,  ecommerceProxy);
+router.delete( "/cart/items", userMw.verifyUser,  ecommerceProxy );
+router.patch( "/cart/items", userMw.verifyUser,  ecommerceProxy);
+router.delete( "/cart/items/:itemId", userMw.verifyUser,  ecommerceProxy );
+router.patch( "/cart/items/:itemId", userMw.verifyUser,  ecommerceProxy );
 
 //custemer /checkout
 router.get ( "/cart/checkout",  userMw.verifyUser,  ecommerceProxy );

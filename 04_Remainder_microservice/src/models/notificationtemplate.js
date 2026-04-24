@@ -19,12 +19,7 @@ module.exports = (sequelize, DataTypes) => {
               'USER_REGISTERED',
               'FORGOT_PASSWORD',
               'RESET_PASSWORD',
-              'WALLET_CREDITED',
-              'WITHDRAW_REQUESTED',
-              'WITHDRAW_APPROVED',
-              'WITHDRAW_REJECTED',
-              'CONTEST_WON',
-          
+              'ORDER_CONFIRM',
             ),
             allowNull: false
           },

@@ -1,8 +1,8 @@
 
 module.exports = {
-   paymentTransactionValidation : require("./paymentTransactionValidation"),
-   eSewaValidation : require("./esewaValidation"),
-   khaltiValidation : require("./khaltiValidation"),
-   stripeValidation: require("./stripeValidation"),
-   internalSvcMw : require('./internal.service.middleware'),
+   esewaMw : require("./esewa.mw"),
+   khaltiMw : require("./khalti.mw"),
+   stripeMw: require("./stripe.mw"),
+   internalSvcMw : require('./internal.service.mw'),
+   errorMw : require('./error.mw'),
 }

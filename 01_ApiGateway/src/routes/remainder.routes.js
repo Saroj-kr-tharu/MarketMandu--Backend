@@ -13,7 +13,8 @@ const remainderProxy = createProxyMiddleware({
   logLevel: "debug",
 });
 
- 
+
+router.get("/check",    remainderProxy);
 router.post("/template", userMw.verifyAdmin,  remainderProxy);
 router.delete("/template/:templateId",   userMw.verifyAdmin,  remainderProxy);
 router.patch("/template/:templateId",  userMw.verifyAdmin,  remainderProxy);
