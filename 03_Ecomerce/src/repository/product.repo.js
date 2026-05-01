@@ -149,27 +149,31 @@ class UserREpo extends CURD_REPO {
         return filter;
 
 
-    }
+    } 
     
     async getProPagation (offset, limit, data) { 
         
         try {   
-            // console.log('offset ', offset, ' limit ', limit, ' data ', data)
+            // console.log('offset : ', offset, ' limit : ', limit, ' data :', data)
               const filter =  this.#createFilter(data)
             //   console.log('filter generated => ', filter);
 
                 let order = [];
                 if (data && typeof data.sort === 'string') {
                     if (data.sort.toLowerCase() === 'price_asc') {
-                    order = [['price', 'ASC']];
+                        order = [['price', 'ASC']];
                     } else if (data.sort.toLowerCase() === 'price_desc') {
-                    order = [['price', 'DESC']];
+                        order = [['price', 'DESC']];
                     }
                 }
 
-                // console.log(' order => ', order)
                 
-              const res = await this.model.findAndCountAll({ where: filter,  offset, limit , order });
+              const res = await this.model.findAndCountAll({
+                where: filter,  
+                offset: parseInt(offset), 
+                limit: parseInt(limit) , 
+                order 
+            });
               return res;
         } catch (error) {
             console.log("something went wrong in Repo curd level (getProPagation) ")

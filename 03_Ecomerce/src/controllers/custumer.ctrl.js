@@ -162,8 +162,9 @@ class CustumerControllers {
       
       getDetailOrderByOrderno = asyncHandler( 
         async (req,res) => {
-            const { orderNO } = req.query;
-            if (!orderNO) {
+            const { OrderNo } = req.params;
+            
+            if (!OrderNo) {
               throw new AppError(
                 "controller Error",
                 "OrderNo Not Required",
@@ -171,7 +172,7 @@ class CustumerControllers {
                 HttpsStatusCodes.ServerErrosCodes.INTERNAL_SERVER_ERROR
               );
             }
-            const response =   await orderService.getOrdersByOrderno(orderNO); 
+            const response =   await orderService.getOrdersByOrderno(OrderNo); 
             return responseHandler.success(res, response, "Successfully fetched all Orders By Order NO ", SucessCode.OK)
         } 
       );
@@ -179,6 +180,7 @@ class CustumerControllers {
       getOrdersByUserId = asyncHandler( 
         async (req,res) => {
             const { page, limit, id } = req?.query;
+            console.log("api hit ")
             if (!id) {
               throw new AppError(
                 "controller Error",

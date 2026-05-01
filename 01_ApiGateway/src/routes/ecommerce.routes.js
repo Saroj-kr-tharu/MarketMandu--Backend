@@ -40,10 +40,10 @@ router.get( "/product",    ecommerceProxy );
 
 // custumer/orders
 router.post( "/orders/addOrder",  userMw.verifyUser,  ecommerceProxy  );
-router.get( "/orders/getByUser",  userMw.verifyUser,  ecommerceProxy );
+router.get( "/orders/getByUser",  userMw.verifyToken,  ecommerceProxy ); 
 router.post( "/orders/orderIntial",  userMw.verifyUser,  ecommerceProxy );
 router.get( "/orders/orderFinal",     ecommerceProxy);
-router.get( "/orders/orderByNO",   userMw.verifyUser,  ecommerceProxy);
+router.get( "/orders/orderByNO/:OrderNo",   userMw.verifyAdmin,  ecommerceProxy);
 
 // custumer / cart 
 router.post( "/cart", userMw.verifyUser,  ecommerceProxy );

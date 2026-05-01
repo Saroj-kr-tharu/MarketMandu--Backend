@@ -36,7 +36,7 @@ router.post( "/orders/addOrder",  internalSvcMw.verifyToken , CustumerCtrl.addOr
 router.get( "/orders/getByUser",  internalSvcMw.verifyToken , CustumerCtrl.getOrdersByUserId );
 router.post( "/orders/orderIntial", internalSvcMw.verifyToken ,  CustumerCtrl.orderInitial );
 router.get( "/orders/orderFinal", internalSvcMw.verifyToken ,  CustumerCtrl.orderFinal );
-router.get( "/orders/orderByNO",  internalSvcMw.verifyToken , CustumerCtrl.getDetailOrderByOrderno );
+router.get( "/orders/orderByNO/:OrderNo",  internalSvcMw.verifyToken , CustumerCtrl.getDetailOrderByOrderno );
 
 // custumer / cart 
 router.post( "/cart", internalSvcMw.verifyToken ,  CustumerCtrl.getCartById );

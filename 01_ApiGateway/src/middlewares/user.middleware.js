@@ -66,7 +66,7 @@ class UserMiddleware {
 
   async verifyToken(req, res, next) {
     const token = req?.headers["x-access-token"];
-    console.log('token => ', token)
+    
     if (!token) {
       return res.status(ClientErrorsCodes.BAD_REQUEST).json({
         data: {},
@@ -75,6 +75,7 @@ class UserMiddleware {
       });
     }
 
+    return next();
    
   }
 }

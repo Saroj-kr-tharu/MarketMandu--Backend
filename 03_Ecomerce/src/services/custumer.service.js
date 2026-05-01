@@ -15,8 +15,10 @@ class custumerService extends CurdService {
     async getProduct(page=1, limit=5, data){
         try {
             
-            const offset = (page - 1) * parseInt(limit);
-            const res = await Product_Repo.getProPagation(offset,limit, data);
+            const parsedPage = parseInt(page) || 1;
+            const parsedLimit = parseInt(limit) || 5;
+            const offset = (parsedPage - 1) * parsedLimit;
+            const res = await Product_Repo.getProPagation(offset,parsedLimit, data);
             return res; 
 
         } catch (error) {
@@ -259,9 +261,9 @@ class custumerService extends CurdService {
 
      async getOrders(page, limit , id){
         try {
+            console.log("Page => ", page, " limit =>  ", limit, " id => ", id);
             const offset = (page - 1) * limit;
             const res = await Orders_Repo.getByUserId(offset, limit, id);
-            
             return res; 
 
         } catch (error) {

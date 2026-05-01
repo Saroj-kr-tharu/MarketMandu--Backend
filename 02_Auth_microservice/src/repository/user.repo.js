@@ -11,7 +11,10 @@ class UserREpo extends CURD_REPO {
   async getBydata(data) {
     try {
      
-      const res = await this.model.findOne({ where: data });
+      const res = await this.model.findOne({
+         attributes: ['id', 'role', 'username', 'isActive','email','createdAt','updatedAt'],
+         where: data 
+        });
       
       return res;
     } catch (error) {
@@ -59,7 +62,12 @@ class UserREpo extends CURD_REPO {
       const filter = this.#createFilter(data);
       //  console.log(filter, 'data => ', data )
 
-      const res = await User.findAndCountAll({ where: filter, offset, limit });
+      const res = await User.findAndCountAll({ 
+        attributes: ['id', 'role', 'username', 'isActive','email','createdAt','updatedAt'],
+        where: filter, 
+        offset, 
+        limit 
+      });
       return res;
     } catch (error) {
       console.log(

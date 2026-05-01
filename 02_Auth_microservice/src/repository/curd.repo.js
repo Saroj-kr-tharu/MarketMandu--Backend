@@ -59,7 +59,9 @@ class CURD_REPO{
     async getAll () { 
         try {
             
-            const res = await this.model.findAll();
+            const res = await this.model.findAll({
+                 attributes: ['id', 'role', 'username', 'isActive','email','createdAt','updatedAt'],
+            });
             return res;
 
         } catch (error) {

@@ -15,8 +15,6 @@ class OrderRepo extends CURD_REPO {
                 where: {
                     userId:id,
                 },
-
-                
                 include: [
                     {
                     model: User,
@@ -53,19 +51,19 @@ class OrderRepo extends CURD_REPO {
         }
     }
 
-     async getOrdersByOrderNo (orderNo ) { 
+    async getOrdersByOrderNo (orderNo ) { 
         try {
-                // console.log('order => ', orderNo)
-              const orders = await Order.findAll({
+            // console.log('orderNo => ', OrderNo)
+              const orders = await Order.findOne({
                 where: {
-                    orderNumber:orderNo,
+                    orderNumber:orderNo, 
                 },
                 include: [
-                    // {
-                    // model: User,
-                    // as: 'user', 
-                    // attributes: ['id', 'username', 'email']
-                    // },
+                    {
+                    model: User,
+                    as: 'user', 
+                    attributes: ['id', 'username', 'email']
+                    },
                     { 
                     model: OrderItem,
                     include: [
@@ -83,6 +81,7 @@ class OrderRepo extends CURD_REPO {
                 return orders;
 
         } catch (error) {
+            console.log('Something Went wrong => ', error)
             throw new AppError(
                 'RepositoryError',
                 'Cannot fetched ALL Order BY User Id  ',

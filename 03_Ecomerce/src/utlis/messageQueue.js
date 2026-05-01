@@ -15,7 +15,9 @@ const createChannel = async () => {
       await channel.assertExchange(EXCHANGE_NAME, "direct", { durable: true });
       return channel;
     } catch (error) {
-      throw error;
+      console.log("Failed to connect with rabbitmq ", error)
+      setTimeout(createChannel, 5000);
+      // throw error;
   }
 };
 

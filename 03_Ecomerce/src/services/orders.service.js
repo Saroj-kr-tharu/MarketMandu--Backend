@@ -20,15 +20,16 @@ class OrdersService extends CurdService {
             // 1. Update orders table: payment => paid and orderStatus => confirmed
             const changes = {  paymentStatus: 'paid',  orderStatus:'confirmed' }
             await Orders_Repo.updateOrdersByOrderNo(changes,data.orderNO, { transaction });
-
+    
             // 2. Get order details with transaction
             const result = await ordersRepo.getOrdersByOrderNo(data.orderNO, { transaction });
-                if (!result || result.length === 0) {
+            console.log("result => ", result )
+                if (!result ) {
                         throw new Error('Order not found');
                     }
 
             // 2.1 get user details from the auth service 
-            let link = `${APIGATEWAY_BACKEND_URL}/auth/email/${result[0]?.dataValues?.userId}`;   
+            let link = `${APIGATEWAY_BACKEND_URL}/auth/email/${result?.dataValues?.userId}`;   
             console.log("Calling auth mail => ", link)
             const user = await axios.get(link);
 
@@ -44,7 +45,7 @@ class OrdersService extends CurdService {
                       transaction 
                 });
 
-            for (const item of result[0].OrderItems) {
+            for (const item of result.OrderItems) {
                 const val = item.dataValues;
                 
                 orderItemsDetail.push({
@@ -98,13 +99,13 @@ class OrdersService extends CurdService {
                     username: UserDetail.Username || UserDetail.email,
 
                     orderItems:orderItemsDetail,
-                    orderId: result[0].dataValues.orderNumber,
-                    shipping_fee: result[0].dataValues.shippingFee,
-                    tax: result[0].dataValues.tax,
-                    deliveryEstimatedDate: result[0].dataValues.deliveredAt,
+                    orderId: result.dataValues.orderNumber,
+                    shipping_fee: result.dataValues.shippingFee,
+                    tax: result.dataValues.tax,
+                    deliveryEstimatedDate: result.dataValues.deliveredAt,
                     notificationTime: new Date().toISOString(),
                     transactionId:  data.trans_id,
-                    amount: result[0].dataValues.totalAmount,
+                    amount: result.dataValues.totalAmount,
                     currency: 'NPR',
                 },
                 retryCount: 0,
@@ -163,9 +164,10 @@ class OrdersService extends CurdService {
 
      async getOrdersByOrderno(OrderNo){
         try {
-
+        // console.log("Order NO from getorderByOrderno = >", OrderNo)
         const res = await Orders_Repo.getOrdersByOrderNo(OrderNo);
-        return res;
+        // console.log('order no  => ', res )
+        return res; 
 
         } catch (error) {
             console.log("something went wrong in service curd level  (getOrdersByOrderno) ")

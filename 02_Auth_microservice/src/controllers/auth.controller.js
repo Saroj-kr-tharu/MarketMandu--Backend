@@ -84,6 +84,7 @@ class AuthController {
     getByEmail = asyncHandler( 
         async (req,res) => {
             const {userId} = req?.params; 
+            // console.log("userId = > ", userId)
             const response = await userService.getByData(userId);
             return responseHandler.success(res, response, "Successfully getByEmail", SucessCode.OK)
         } 
