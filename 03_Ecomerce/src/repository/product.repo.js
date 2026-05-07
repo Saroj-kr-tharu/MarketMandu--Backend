@@ -44,12 +44,13 @@ class UserREpo extends CURD_REPO {
 
     async deleteById (id) { 
         try {
-
-            console.log('id => ', id)
-            const res = await this.model.update(
-                    { isActive: this.model.sequelize.literal('NOT isActive') },
+ 
+            // console.log('id => ', id)
+             const res = await this.model.update(
+                    { isActive: this.model.sequelize.literal('NOT "isActive"') },
                     { where: { id } }
                 );
+        return res;
             return res;
         } catch (error) {
             console.log("something went wrong in Repo curd level (delete) ")

@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:22-alpine
 # from the base image node 
 
 WORKDIR /Ecommerce/backend/payment_service

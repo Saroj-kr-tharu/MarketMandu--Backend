@@ -9,7 +9,6 @@ class CurdService {
     async createService(data){
         try {
             const res = await this.repo.create(data);
-            
             return res; 
 
         } catch (error) {
@@ -40,7 +39,14 @@ class CurdService {
 
     async updateService(data,id){
         try {
-            console.log(`data => ${data} id => ${id}`)
+            
+            // 1. get data by id 
+            // const data = await 
+            // 2. check the images with the images update 
+            // 3. if updated image data is not images 
+            // 4. remove obj from the s3 
+            // 5. update the object
+
             const res = await this.repo.updateById(data, id );
             return res; 
 

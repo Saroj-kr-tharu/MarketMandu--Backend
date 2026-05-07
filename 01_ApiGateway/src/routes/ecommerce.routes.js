@@ -44,6 +44,8 @@ router.get( "/orders/getByUser",  userMw.verifyToken,  ecommerceProxy );
 router.post( "/orders/orderIntial",  userMw.verifyUser,  ecommerceProxy );
 router.get( "/orders/orderFinal",     ecommerceProxy);
 router.get( "/orders/orderByNO/:OrderNo",   userMw.verifyAdmin,  ecommerceProxy);
+router.get("/orders/user/:userId",userMw.verifyUser, ecommerceProxy  )
+router.get( "/order/userId/:OrderNo",   userMw.verifyUser,  ecommerceProxy);
 
 // custumer / cart 
 router.post( "/cart", userMw.verifyUser,  ecommerceProxy );
@@ -57,7 +59,14 @@ router.patch( "/cart/items/:itemId", userMw.verifyUser,  ecommerceProxy );
 //custemer /checkout
 router.get ( "/cart/checkout",  userMw.verifyUser,  ecommerceProxy );
 
+// s3 
+router.get ( "/s3/Url", userMw.verifyAdmin ,  ecommerceProxy );
+router.delete( "/s3/:objId",  userMw.verifyAdmin ,  ecommerceProxy );
 
-
+//banner 
+router.post( "/banner",  userMw.verifyAdmin ,  ecommerceProxy );
+router.get( "/banners",   userMw.verifyUser ,  ecommerceProxy );
+router.delete( "/banner/:id",   userMw.verifyAdmin ,  ecommerceProxy );
+router.patch( "/banner/:id",   userMw.verifyAdmin ,  ecommerceProxy );
 
 module.exports = router;

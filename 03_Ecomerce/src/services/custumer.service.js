@@ -259,9 +259,9 @@ class custumerService extends CurdService {
     }
 
 
-     async getOrders(page, limit , id){
+    async getOrders(page, limit , id){
         try {
-            console.log("Page => ", page, " limit =>  ", limit, " id => ", id);
+            // console.log("Page => ", page, " limit =>  ", limit, " id => ", id);
             const offset = (page - 1) * limit;
             const res = await Orders_Repo.getByUserId(offset, limit, id);
             return res; 
@@ -275,6 +275,34 @@ class custumerService extends CurdService {
         }
     }
 
+
+    async getOrdersByUserIdWithOutPagination( id){
+        try {
+            const res = await Orders_Repo.getByUserIdWithOutPagination( id);
+            return res; 
+
+        } catch (error) {
+            if (error.name == 'RepositoryError' || error.name == 'ValidationError') {
+                throw error;
+            }
+
+            throw new ServiceError()
+        }
+    }
+
+     async getOrdersByUserAndOrderNo(UserId, OrderNo){
+        try {
+            // console.log('from service orderNo => ', OrderNo, " UserId => ", UserId)
+            const res = await Orders_Repo.getByOrderNoAndUserId(UserId,OrderNo);
+            return res; 
+        } catch (error) {
+            console.log('error => ', error)
+            if (error.name == 'RepositoryError' || error.name == 'ValidationError') {
+                throw error;
+            }
+            throw new ServiceError()
+        }
+    }
 
 
 }

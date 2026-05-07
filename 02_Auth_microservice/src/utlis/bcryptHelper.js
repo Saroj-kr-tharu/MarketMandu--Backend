@@ -30,7 +30,6 @@ class Bcrypt_helper_class {
                           `something is wrong`,
                           'Issue in verify Creaditials  in bcryptHelper in  Bcrypt_helper_class function ',
                           HttpsStatusCodes.ServerErrosCodes.INTERNAL_SERVER_ERROR
-
                       );
       }
   }

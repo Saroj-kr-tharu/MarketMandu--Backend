@@ -51,6 +51,89 @@ class OrderRepo extends CURD_REPO {
         }
     }
 
+    async getByUserIdWithOutPagination (  id ) { 
+        try {
+            // console.log(' ifd => ', id )
+              const orders = await Order.findAll({
+                where: {
+                    userId:id,
+                },
+                include: [
+                    {
+                    model: User,
+                    as: 'user', 
+                    attributes: ['id', 'username', 'email']
+                    },
+                    {
+                    model: OrderItem,
+                    include: [
+                        {
+                        model: Product,
+                        attributes: ['id', 'name', 'price', 'stock']
+                        }
+                    ]
+                    }
+                ], 
+
+                order: [['createdAt', 'DESC']]
+                });
+
+                return orders;
+
+        } catch (error) {
+            console.log('error => ', error)
+            throw new AppError(
+                'RepositoryError',
+                'Cannot fetched ALL Order BY User Id  ',
+                'Issue in updating By ID in OrderRepo',
+                HttpsStatusCodes.ServerErrosCodes.INTERNAL_SERVER_ERROR
+
+            );
+        }
+    }
+
+    async getByOrderNoAndUserId ( UserId, OrderNo ) { 
+        try {
+            // console.log('from repo orderNo => ', OrderNo, " UserId => ", UserId)
+              const orders = await Order.findOne({
+                where: {
+                    userId: UserId,
+                    orderNumber: OrderNo,
+                },
+                include: [
+                    {
+                    model: User,
+                    as: 'user', 
+                    attributes: ['id', 'username', 'email']
+                    },
+                    {
+                    model: OrderItem,
+                    include: [
+                        {
+                        model: Product,
+                        attributes: ['id', 'name', 'price', 'stock']
+                        }
+                    ]
+                    }
+                ], 
+
+                order: [['createdAt', 'DESC']]
+                });
+                // console.log('res => ',orders)
+                return orders;
+
+        } catch (error) {
+            // console.log('error => ', error)
+            throw new AppError(
+                'RepositoryError',
+                'Cannot fetched ALL Order BY User Id  ',
+                'Issue in updating By ID in OrderRepo',
+                HttpsStatusCodes.ServerErrosCodes.INTERNAL_SERVER_ERROR
+
+            );
+        }
+    }
+
     async getOrdersByOrderNo (orderNo ) { 
         try {
             // console.log('orderNo => ', OrderNo)

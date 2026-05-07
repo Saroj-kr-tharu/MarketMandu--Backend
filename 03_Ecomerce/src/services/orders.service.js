@@ -1,3 +1,5 @@
+const crypto = require("crypto");
+
 const CurdService = require('./curd.service')
 const  {Orders_Repo, Product_Repo} = require('../repository/index')
 const {  ServiceError} = require('../utlis/index');
@@ -7,7 +9,7 @@ const axios = require('axios');
 const ordersRepo = require('../repository/orders.repo');
 const { v4: uuidv4 } = require('uuid');
 const { sendMessageToQueueService } = require('./queue.service');
-
+const idempotancyKeyService  =require('./idempotancy.key.service')
 
 class OrdersService extends CurdService {
     constructor(){
@@ -131,10 +133,8 @@ class OrdersService extends CurdService {
 
     async updateService(data, orderNumber ){
         try {
-
-        const res = await Orders_Repo.updateOrdersByOrderNo(data,orderNumber);
-        return res;
-
+            const res = await Orders_Repo.updateOrdersByOrderNo(data,orderNumber);
+            return res;
         } catch (error) {
             console.log("something went wrong in service curd level  (getById) ")
             if (error.name == 'RepositoryError' || error.name == 'ValidationError') {
@@ -197,6 +197,30 @@ class OrdersService extends CurdService {
 
     async orderProcessIntialService(data) {
         try {
+
+            // check the idempotencykey  
+            const requestHash = crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
+            let key = null;  
+            const [keyRecord, created] = await idempotancyKeyService.findOrCreateService({
+                    where: { key: data.idempotencyKey },
+                    defaults: {
+                        userId: data.userId,
+                        operation: 'order initialization',
+                        requestHash: requestHash,
+                        responseSnapshot: {},
+                        status: 'IN_PROGRESS'
+                    }
+            });
+            if (!created) {
+                if (keyRecord.requestHash !== requestHash) {
+                    throw new Error("IDEMPOTENCY_KEY_REUSED_WITH_DIFFERENT_PAYLOAD");
+                }
+                if (keyRecord.status === "IN_PROGRESS") {
+                    throw new Error("PROCESSING_THIS_REQUEST");
+                }
+                // Return cached SUCCESS response
+                return keyRecord.responseSnapshot;
+            }
 
             let subtotal  = 0 ; 
             const products = [];
@@ -315,7 +339,11 @@ class OrdersService extends CurdService {
             // console.log('summary', summary);
 
             // 7 calling payment gateway 
-            const response = await this.#paymentIntialize(data.gateway, summary, data.token);           
+            const response = await this.#paymentIntialize(data.gateway, summary, data.token);  
+            await idempotancyKeyService.updateByData(
+                { key: data.idempotencyKey },
+                { responseSnapshot: response, status: "SUCCESS" }
+            );         
             return response;
 
         } catch (error) {
@@ -373,14 +401,13 @@ class OrdersService extends CurdService {
             }
 
 
-            console.log(' from payment url  Link => ', link, )
+            // console.log(' from payment url  Link => ', link, )
             const axiosResult = await axios.post(link, reqBody, {
                 headers: {
                     'Content-Type': 'application/json',
                     'x-access-token': token ,
                 }
             });
-
 
             return axiosResult.data;
 

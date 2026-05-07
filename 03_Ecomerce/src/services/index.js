@@ -6,5 +6,7 @@ module.exports = {
     orderItemService : require('./orders.items.service'),
     orderService : require('./orders.service'),
     userService : require('./user.service'),
+    bannerService : require('./banner.service'),
+   
     
 }

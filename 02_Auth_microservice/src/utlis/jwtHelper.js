@@ -5,16 +5,11 @@ const { PRIVATEJWT,  RefreshPRIVATEJWT } = require("../config/server.config");
 
 class JWT {
 
-  async createToken(data, time= '1m') {
+  async createToken(data, time= '10m') {
     try {
-
-      
       const token = await jwt.sign({ data }, PRIVATEJWT, {
         expiresIn: time, 
       });
-
-
-
       return token;
     } catch (error) {
       console.log("Something went wrong in service layer (creating the token)", error);

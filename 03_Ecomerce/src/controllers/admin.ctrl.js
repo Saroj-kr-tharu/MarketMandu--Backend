@@ -1,6 +1,6 @@
 
 const {SucessCode,ServerErrosCodes} = require('../utlis/Errors/https.codes')
-const {adminService, orderService, userService} = require('../services/index');
+const {adminService, orderService, userService, bannerService} = require('../services/index');
 const { asyncHandler, responseHandler } = require('../utlis');
 
 class AdminController { 
@@ -62,6 +62,42 @@ class AdminController {
             const data = req?.body; 
             const response = await orderService.updateService(data, orderId);
             return responseHandler.success(res, response, "Successfully updated orders", SucessCode.OK)
+        } 
+    );
+
+
+    // banner 
+    bannerGetAll = asyncHandler( 
+        async (req,res) => {
+           
+            const response = await bannerService.getAll();
+            return responseHandler.success(res, response, "Successfully fetched all  banner", SucessCode.OK)
+        } 
+    );
+
+    bannerCreate = asyncHandler( 
+        async (req,res) => {
+            const data = req?.body; 
+            const response = await bannerService.createService(data);
+            return responseHandler.success(res, response, "Successfully create banner", SucessCode.OK)
+        } 
+    );
+
+    bannerEdit = asyncHandler( 
+        async (req,res) => {
+            const {id} = req?.params;
+            const data = req?.body; 
+            const response = await bannerService.updateService(data,id);
+            return responseHandler.success(res, response, "Successfully updated  banner", SucessCode.OK)
+        } 
+    );
+
+    bannerDelete = asyncHandler( 
+        async (req,res) => {
+            const {orderId} = req?.query;
+            const data = req?.body; 
+            const response = await bannerService.deleteService(data);
+            return responseHandler.success(res, response, "Successfully delete banners", SucessCode.OK)
         } 
     );
 

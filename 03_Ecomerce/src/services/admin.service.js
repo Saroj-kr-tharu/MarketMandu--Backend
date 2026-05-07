@@ -10,7 +10,7 @@ class adminService extends CurdService {
 
     async deleteByIdService(data){
         try {
-            // console.log('id => ', data)
+            // console.log('id from service => ', data)
             const res = Product_Repo.deleteById(data);
             return res; 
 

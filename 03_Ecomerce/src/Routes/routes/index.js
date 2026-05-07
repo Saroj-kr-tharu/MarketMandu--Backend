@@ -26,7 +26,7 @@ router.get( "/getOrderAllWithoutFilter", internalSvcMw.verifyToken ,  adminCtrl.
 router.patch( "/orders/update", internalSvcMw.verifyToken ,  adminCtrl.editOrders ); 
 
 
-// custumer 
+
 // custumer/product
 router.get( "/products",internalSvcMw.verifyToken ,internalSvcMw.verifyToken ,  CustumerCtrl.getProduct );
 router.get( "/product",internalSvcMw.verifyToken ,internalSvcMw.verifyToken ,  CustumerCtrl.getProductById ); 
@@ -37,6 +37,8 @@ router.get( "/orders/getByUser",  internalSvcMw.verifyToken , CustumerCtrl.getOr
 router.post( "/orders/orderIntial", internalSvcMw.verifyToken ,  CustumerCtrl.orderInitial );
 router.get( "/orders/orderFinal", internalSvcMw.verifyToken ,  CustumerCtrl.orderFinal );
 router.get( "/orders/orderByNO/:OrderNo",  internalSvcMw.verifyToken , CustumerCtrl.getDetailOrderByOrderno );
+router.get("/orders/user/:userId", internalSvcMw.verifyToken, CustumerCtrl.getOrdersByUserIdWithOutPagination )
+router.get( "/order/userId/:OrderNo",   internalSvcMw.verifyToken,  CustumerCtrl.getOrderByUserandOrderNo);
 
 // custumer / cart 
 router.post( "/cart", internalSvcMw.verifyToken ,  CustumerCtrl.getCartById );
@@ -48,8 +50,18 @@ router.patch( "/cart/items",  internalSvcMw.verifyToken , CustumerCtrl.updateIte
 
 router.delete( "/cart/items/:itemId",  internalSvcMw.verifyToken , CustumerCtrl.removeItemCart );
 router.patch( "/cart/items/:itemId",  internalSvcMw.verifyToken , CustumerCtrl.updateItemCart );
- 
 
 //custemer /checkout
 router.get ( "/cart/checkout", internalSvcMw.verifyToken ,  CustumerCtrl.checkoutCart );
+
+// s3 service 
+router.get ( "/s3/Url", internalSvcMw.verifyToken ,  CustumerCtrl.getSignedURL );
+router.delete( "/s3/:objId",  internalSvcMw.verifyToken , CustumerCtrl.removeObjS3 );
+
+// banner service 
+router.post( "/banner", internalSvcMw.verifyToken ,  adminCtrl.bannerCreate );
+router.get( "/banners",  internalSvcMw.verifyToken , adminCtrl.bannerGetAll );
+router.delete( "/banner/:id",  internalSvcMw.verifyToken , adminCtrl.bannerDelete );
+router.patch( "/banner/:id",  internalSvcMw.verifyToken , adminCtrl.bannerEdit );
+
 module.exports = router;

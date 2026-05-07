@@ -3,9 +3,11 @@ const {
   custumerService,
   cartService,
   orderService,
+
 } = require("../services/index");
 const { SucessCode, ServerErrosCodes } = require("../utlis/Errors/https.codes");
 const { AppError, HttpsStatusCodes, asyncHandler, responseHandler } = require("../utlis/index");
+const   s3Service = require('../services/s3.service')
 
 class CustumerControllers {
 
@@ -108,6 +110,7 @@ class CustumerControllers {
                   billingAddress,
                   paymentMethod,
                   orderItems,
+                  idempotencyKey
                 } = req?.body;
                 paymentMethod = paymentMethod?.toUpperCase();
                 const token = req?.headers["x-access-token"];
@@ -118,7 +121,8 @@ class CustumerControllers {
                   !billingAddress ||
                   !paymentMethod ||
                   !orderItems ||
-                  !userId
+                  !userId ||
+                  !idempotencyKey
                 ) {
                   throw new AppError(
                       "controller Error",
@@ -135,13 +139,13 @@ class CustumerControllers {
                   paymentMethod,
                   gateway,
                   orderItems,
-                  token
+                  token,
+                  idempotencyKey
                 });
                 return responseHandler.success(res, response, "Successfully to initalize orders ", SucessCode.OK)
             } 
         );
   
-
       orderFinal = asyncHandler( 
             async (req,res) => {
                 const { orderNO, total_amount, trans_id } = req.query;
@@ -158,7 +162,6 @@ class CustumerControllers {
                 // return responseHandler.success(res, response, "Successfully to get  products By id ", SucessCode.OK)
             } 
       );
-      
       
       getDetailOrderByOrderno = asyncHandler( 
         async (req,res) => {
@@ -180,7 +183,7 @@ class CustumerControllers {
       getOrdersByUserId = asyncHandler( 
         async (req,res) => {
             const { page, limit, id } = req?.query;
-            console.log("api hit ")
+            // console.log("api hit ")
             if (!id) {
               throw new AppError(
                 "controller Error",
@@ -190,6 +193,41 @@ class CustumerControllers {
               );
             }
             const response = await custumerService.getOrders(page, limit, id);
+            return responseHandler.success(res, response, "Successfully fetched all Orders By UserId ", SucessCode.OK)
+        } 
+      );
+
+      getOrdersByUserIdWithOutPagination = asyncHandler( 
+        async (req,res) => {
+            const {  userId } = req?.params;
+            // console.log("api hit ", userId)
+            if (!userId) {
+              throw new AppError(
+                "controller Error",
+                "Cannot have id from user    ",
+                "Issue in gettting  ID in custumer controller",
+                HttpsStatusCodes.ServerErrosCodes.INTERNAL_SERVER_ERROR
+              );
+            }
+            const response = await custumerService.getOrdersByUserIdWithOutPagination( userId);
+            return responseHandler.success(res, response, "Successfully fetched all Orders By getOrdersByUserIdWithOutPagination ", SucessCode.OK)
+        } 
+      );
+
+      getOrderByUserandOrderNo = asyncHandler( 
+        async (req,res) => {
+            const {  userId } = req?.query;
+            const {  OrderNo } = req?.params;
+            console.log('from ctrl orderNo => ', OrderNo, " UserId => ", userId)
+            if (!userId || !OrderNo) {
+              throw new AppError(
+                "controller Error",
+                "Cannot have id from user    ",
+                "Issue in gettting  ID in custumer controller",
+                HttpsStatusCodes.ServerErrosCodes.INTERNAL_SERVER_ERROR
+              );
+            }
+            const response = await custumerService.getOrdersByUserAndOrderNo(userId, OrderNo);
             return responseHandler.success(res, response, "Successfully fetched all Orders By UserId ", SucessCode.OK)
         } 
       );
@@ -270,7 +308,23 @@ class CustumerControllers {
         return responseHandler.success(res, response, "Successfully Checkout ", SucessCode.OK)
       } 
     );
- 
+    
+    // s3 
+    getSignedURL = asyncHandler( 
+      async (req,res) => {
+       
+        const response = await s3Service.generateUploadURL();
+        return responseHandler.success(res, response, "Successfully getSignedURL ", SucessCode.OK)
+      } 
+    );
+
+    removeObjS3 = asyncHandler( 
+      async (req,res) => {
+          const { objId } = req?.params;
+          const response = await s3Service.deleteObject(objId);
+          return responseHandler.success(res, response, "Successfully removeObjS3 ", SucessCode.OK)
+      } 
+    );
 
 }
 
