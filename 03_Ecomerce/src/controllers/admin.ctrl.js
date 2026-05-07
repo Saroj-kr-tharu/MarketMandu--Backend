@@ -87,16 +87,16 @@ class AdminController {
         async (req,res) => {
             const {id} = req?.params;
             const data = req?.body; 
-            const response = await bannerService.updateService(data,id);
+            const response = await bannerService.updateByid(data,id);
             return responseHandler.success(res, response, "Successfully updated  banner", SucessCode.OK)
         } 
     );
 
     bannerDelete = asyncHandler( 
         async (req,res) => {
-            const {orderId} = req?.query;
-            const data = req?.body; 
-            const response = await bannerService.deleteService(data);
+            const {id} = req?.params;
+            const {objId} = req?.query; 
+            const response = await bannerService.deleteById(id,objId);
             return responseHandler.success(res, response, "Successfully delete banners", SucessCode.OK)
         } 
     );

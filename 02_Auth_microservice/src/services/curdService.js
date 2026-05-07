@@ -57,7 +57,7 @@ class CurdService {
     async getAll(){
         try {
             const res = await this.repo.getAll();
-            console.log('from repo => ',res)
+            // console.log('from repo => ',res)
             return res; 
 
         } catch (error) {
