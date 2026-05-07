@@ -65,7 +65,7 @@ router.delete( "/s3/:objId",  userMw.verifyAdmin ,  ecommerceProxy );
 
 //banner 
 router.post( "/banner",  userMw.verifyAdmin ,  ecommerceProxy );
-router.get( "/banners",   userMw.verifyToken ,  ecommerceProxy );
+router.get( "/banners",   ecommerceProxy );
 router.delete( "/banner/:id",   userMw.verifyAdmin ,  ecommerceProxy );
 router.patch( "/banner/:id",   userMw.verifyAdmin ,  ecommerceProxy );
 
