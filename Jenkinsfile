@@ -16,7 +16,11 @@ pipeline{
          stage("scan file system"){ 
             steps{ 
                echo "Scanning File "
-               sh ' trivy image --format json --output result.json ${dockerHubUser}/marketmandu-backend:latest'
+               sh ' trivy image \
+                  --format json \
+                  --output result.json \
+                  --scanners vuln \
+                  ${dockerHubUser}/marketmandu-backend:latest'
          } }
 
 
