@@ -13,14 +13,28 @@ pipeline{
             echo "checking the Dependency "
          } }
 
-         stage("scan file system"){
-           steps{
-            echo "Trivy File Scanning "
+         stage("scan file system"){ 
+            steps{ 
+               echo "Scanning File "
+            sh 'trivy fs . -o result.json'
          } }
+
 
          stage("Docker Image Build"){
            steps{
             echo "Building the Docker Image "
+
+            withCredentials(  [usernamePassword(
+                        credentialsId: "dockerHubCreds",
+                        passwordVariable:"dockerHubPass" ,
+                        usernameVariable:"dockerHubUser" )]
+                    ){
+                        sh '''
+                          cd Marketmandu--Backend 
+                          docker build -t ${dockerHubUser}/marketmandu-backend:latest .
+                        '''
+                     }
+          
          } }
 
          stage("Docker Image Scan"){
