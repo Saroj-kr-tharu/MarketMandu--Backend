@@ -13,15 +13,7 @@ pipeline{
             echo "checking the Dependency "
          } }
 
-         stage("scan file system"){ 
-            steps{ 
-               echo "Scanning File "
-               sh ' trivy image \
-                  --format json \
-                  --output result.json \
-                  --scanners vuln \
-                  ${dockerHubUser}/marketmandu-backend:latest'
-         } }
+         
 
 
          stage("Docker Image Build"){
@@ -39,6 +31,16 @@ pipeline{
                         '''
                      }
           
+         } }
+
+         stage("scan file system"){ 
+            steps{ 
+               echo "Scanning File "
+               sh ' trivy image \
+                  --format json \
+                  --output result.json \
+                  --scanners vuln \
+                  ${dockerHubUser}/marketmandu-backend:latest'
          } }
 
          stage("Docker Image Scan"){
