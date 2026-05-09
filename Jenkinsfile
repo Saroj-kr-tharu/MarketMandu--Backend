@@ -72,19 +72,19 @@ pipeline{
 
                           echo "Building 02_Auth_microservice "
                           cd /Agent/workspace/Marketmandu--Backend/02_Auth_microservice
-                          docker build -t ${dockerHubUser}/marketmandu-auth_microservice:latest .
+                          docker build --no-cache -t ${dockerHubUser}/marketmandu-auth_microservice:latest .
 
                           echo "Building 03_Ecomerce "
                           cd /Agent/workspace/Marketmandu--Backend/03_Ecomerce
-                          docker build -t ${dockerHubUser}/marketmandu-ecomerce_microservice:latest .
+                          docker build --no-cache -t ${dockerHubUser}/marketmandu-ecomerce_microservice:latest .
 
                           echo "Building 04_Remainder_microservice "
                           cd /Agent/workspace/Marketmandu--Backend/04_Remainder_microservice
-                          docker build -t ${dockerHubUser}/marketmandu-remainder_microservice:latest .
+                          docker build --no-cache -t ${dockerHubUser}/marketmandu-remainder_microservice:latest .
 
                           echo "Building 05_Payment_microservice "
                           cd /Agent/workspace/Marketmandu--Backend/05_Payment_microservice
-                          docker build -t ${dockerHubUser}/marketmandu-payment_microservice:latest .
+                          docker build --no-cache -t ${dockerHubUser}/marketmandu-payment_microservice:latest .
 
                         '''
                      }
