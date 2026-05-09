@@ -60,22 +60,22 @@ pipeline{
                         passwordVariable:"dockerHubPass" ,
                         usernameVariable:"dockerHubUser" )]
                     ){
-                        
-                        echo "Scanning 01_ApiGateway "
-                       sh ' trivy image \
-                        --format json \
-                        --output marketmandu-apigateway.json \
-                        --scanners vuln \
-                        ${dockerHubUser}/marketmandu-apigateway:latest';
+                        sh '''
+                          echo "Scanning 01_ApiGateway "
+                           sh ' trivy image \
+                              --format json \
+                              --output marketmandu-apigateway.json \
+                              --scanners vuln \
+                              ${dockerHubUser}/marketmandu-apigateway:latest';
 
-                        echo "Scanning 02_Auth_microservice "
-                        sh ' trivy image \
-                           --format json \
-                           --output 02_Auth_microservice.json \
-                           --scanners vuln \
-                           ${dockerHubUser}/marketmandu-auth_microservice:latest';
+                           echo "Scanning 02_Auth_microservice "
+                           sh ' trivy image \
+                              --format json \
+                              --output 02_Auth_microservice.json \
+                              --scanners vuln \
+                              ${dockerHubUser}/marketmandu-auth_microservice:latest';
 
-                           '''
+                        '''
                      }
           
          } }
