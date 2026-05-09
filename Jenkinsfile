@@ -60,7 +60,7 @@ pipeline{
                         passwordVariable:"dockerHubPass" ,
                         usernameVariable:"dockerHubUser" )]
                     ){
-                        sh '''
+                        
                           echo "Scanning 01_ApiGateway "
                            sh ' trivy image \
                               --format json \
@@ -75,7 +75,7 @@ pipeline{
                               --scanners vuln \
                               ${dockerHubUser}/marketmandu-auth_microservice:latest';
 
-                        '''
+                        
                      }
           
          } }
