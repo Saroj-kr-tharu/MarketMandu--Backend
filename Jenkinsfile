@@ -8,26 +8,30 @@ pipeline{
             git url : "https://github.com/Saroj-kr-tharu/MarketMandu--Backend", branch :"main"
          } }
 
-         stage("OWASP Dependency Check") {
-            steps {
-               echo "Running OWASP Dependency Check..."
-               dir('/Agent/workspace/Marketmandu--Backend') {
-                     sh """
-                        /Agent/tools/org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation/OWASP_Dependency-Check/bin/dependency-check.sh \
+          stage("OWASP Dependency Check"){
+            steps{
+               script {
+                  
+                     sh 'mkdir -p trivy-report'
+                     def dependencyCheckHome = tool 'OWASP Dependency-Check'
+                     
+                  
+                     withCredentials([string(credentialsId: 'NVD_API_KEY', variable: 'NVD_API_KEY')]) {
+                        sh """
+                           ${dependencyCheckHome}/bin/dependency-check.sh \
                            --scan . \
                            --format XML \
                            --out trivy-report \
                            --prettyPrint \
-                           --nvdApiKey ${NVD_API_KEY} \
-                           --nvdApiDelay 6000 \
-                           --nvdMaxRetryCount 10 \
-                           --failOnCVSS 11 \
-                           --disableYarnAudit \
-                           --disableNodeAudit
-                     """
+                           --nvdApiKey \${NVD_API_KEY}
+                        """
+                     }
                }
-            }
-         }
+               
+               // Publish the report
+               dependencyCheckPublisher pattern: 'dependency-check-report/dependency-check-report.xml'
+          }
+      }
 
         stage("Trivy File System Scan") { 
             steps { 
