@@ -3,6 +3,12 @@ pipeline{
 
     stages{ 
 
+      stage("Cleanup Workspace"){
+            steps{
+                cleanWs()
+            }
+        }
+
         stage("Clone Code"){
            steps{
             git url : "https://github.com/Saroj-kr-tharu/MarketMandu--Backend", branch :"main"
