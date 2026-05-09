@@ -30,8 +30,7 @@ pipeline{
                      }
                }
                
-               // Publish the report
-               dependencyCheckPublisher pattern: 'dependency-check-report/dependency-check-report.xml'
+               dependencyCheckPublisher pattern: 'trivy-report/dependency-check-report.xml'
           }
       }
 
