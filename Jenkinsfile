@@ -77,7 +77,7 @@ pipeline{
                           echo "Scanning 01_ApiGateway "
                            sh ' trivy image \
                               --format json \
-                              --output /trivy-report/marketmandu-apigateway.json \
+                              --output trivy-report/marketmandu-apigateway.json \
                               --scanners vuln \
                               ${dockerHubUser}/marketmandu-apigateway:latest';
 
@@ -88,6 +88,29 @@ pipeline{
                               --scanners vuln \
                               ${dockerHubUser}/marketmandu-auth_microservice:latest';
 
+                           echo "Scanning 03_Ecomerce "
+                           sh ' trivy image \
+                              --format json \
+                              --output trivy-report/03_Ecomerce.json \
+                              --scanners vuln \
+                              ${dockerHubUser}/marketmandu-ecomerce_microservice:latest';
+
+                  
+                           echo "Scanning 04_Remainder_microservice "
+                           sh ' trivy image \
+                              --format json \
+                              --output trivy-report/04_Remainder_microservice.json \
+                              --scanners vuln \
+                              ${dockerHubUser}/marketmandu-remainder_microservice:latest';
+
+                           echo "Scanning 05_Payment_microservice "
+                           sh ' trivy image \
+                              --format json \
+                              --output trivy-report/05_Payment_microservice.json \
+                              --scanners vuln \
+                              ${dockerHubUser}/marketmandu-payment_microservice:latest';
+
+                         
                         
                      }
           
