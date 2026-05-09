@@ -18,9 +18,10 @@ pipeline{
                echo "Scanning Marketmandu Backend Source Code..."
                
                dir('/Agent/workspace/Marketmandu--Backend') {
+                     sh "mkdir -p trivy-report "
                      sh "trivy fs \
                         --format json \
-                        --output trivy-fs-report.json \
+                        --output /trivy-report/trivy-fs-report.json \
                         --scanners vuln \
                         ." 
                }
@@ -76,14 +77,14 @@ pipeline{
                           echo "Scanning 01_ApiGateway "
                            sh ' trivy image \
                               --format json \
-                              --output marketmandu-apigateway.json \
+                              --output /trivy-report/marketmandu-apigateway.json \
                               --scanners vuln \
                               ${dockerHubUser}/marketmandu-apigateway:latest';
 
                            echo "Scanning 02_Auth_microservice "
                            sh ' trivy image \
                               --format json \
-                              --output 02_Auth_microservice.json \
+                              --output /trivy-report/02_Auth_microservice.json \
                               --scanners vuln \
                               ${dockerHubUser}/marketmandu-auth_microservice:latest';
 
