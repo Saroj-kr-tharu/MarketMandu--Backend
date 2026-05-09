@@ -86,7 +86,7 @@ pipeline{
           
          } }
 
-         stage("Trivy Image Scan "){
+         stage("Docker Image Scan "){
            steps{
             echo "Scanning Docker Image "
 
@@ -138,15 +138,27 @@ pipeline{
 
          
 
-         stage("Docker Image Scan"){
-           steps{
-            echo "Scanning Docker Image "
-         } }
-
          stage("Image Push To Docker hub"){
            steps{
-            echo "Scanning Docker Image "
+            echo "Pushing Docker Image to Docker hub "
+
+            withCredentials(  [usernamePassword(
+                        credentialsId: "dockerHubCreds",
+                        passwordVariable:"dockerHubPass" ,
+                        usernameVariable:"dockerHubUser" )]
+                    ){
+                        sh '''
+                          docker push ${dockerHubUser}/marketmandu-apigateway:latest
+                          docker push  ${dockerHubUser}/marketmandu-auth_microservice:latest 
+                          docker push  ${dockerHubUser}/marketmandu-ecomerce_microservice:latest 
+                          docker push  ${dockerHubUser}/marketmandu-remainder_microservice:latest 
+                          docker push  ${dockerHubUser}/marketmandu-payment_microservice:latest 
+                        '''
+                     }
+          
          } }
+
+         
 
          stage("K8s Deployment/Pod Restart"){
            steps{
