@@ -21,7 +21,7 @@ pipeline{
                      sh "mkdir -p trivy-report "
                      sh "trivy fs \
                         --format json \
-                        --output /trivy-report/trivy-fs-report.json \
+                        --output trivy-report/trivy-fs-report.json \
                         --scanners vuln \
                         ." 
                }
@@ -84,7 +84,7 @@ pipeline{
                            echo "Scanning 02_Auth_microservice "
                            sh ' trivy image \
                               --format json \
-                              --output /trivy-report/02_Auth_microservice.json \
+                              --output trivy-report/02_Auth_microservice.json \
                               --scanners vuln \
                               ${dockerHubUser}/marketmandu-auth_microservice:latest';
 
