@@ -165,6 +165,16 @@ pipeline{
            steps{
             echo "k8s Deploymnet/Pod restarting  "
          } }
+
+         stage("Generate Security Report") {
+         steps {
+            sh """
+               python3 security_report_generator.py \
+                  trivy-report \
+                  trivy-report/final-security-report.md
+            """
+         }
+      }
     }
 
     post{
