@@ -9,33 +9,24 @@ pipeline{
          } }
 
          stage("OWASP Dependency Check") {
-            steps {
-
-               dir('/Agent/workspace/Marketmandu--Backend') {
-
-                     script {
-
-                        sh 'mkdir -p trivy-report'
-
-                        def dependencyCheckHome = tool 'OWASP Dependency-Check'
-
-                        withCredentials([string(credentialsId: 'NVD_API_KEY', variable: 'NVD_API_KEY')]) {
-
-                           sh """
-                                 ${dependencyCheckHome}/bin/dependency-check.sh \
-                                 --scan . \
-                                 --format XML \
-                                 --out trivy-report \
-                                 --prettyPrint \
-                                 --nvdApiKey \$NVD_API_KEY
-                           """
-                        }
-                     }
-               }
-
-               dependencyCheckPublisher pattern: 'trivy-report/dependency-check-report.xml'
-            }
-         }
+    steps {
+        echo "Running OWASP Dependency Check..."
+        dir('/Agent/workspace/Marketmandu--Backend') {
+            sh """
+                /Agent/tools/org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation/OWASP_Dependency-Check/bin/dependency-check.sh \
+                    --scan . \
+                    --format XML \
+                    --out trivy-report \
+                    --prettyPrint \
+                    --nvdApiKey ${NVD_API_KEY} \
+                    --nvdApiDelay 6000 \
+                    --nvdMaxRetryCount 10 \
+                    --failOnCVSS 11 \
+                    --disableYarnAudit \
+                    --disableNodeAudit
+            """
+        }
+    }
 
         stage("Trivy File System Scan") { 
             steps { 
