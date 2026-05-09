@@ -11,7 +11,7 @@ pipeline{
          stage("OWASP Dependency Check"){
           steps{
               script {
-                 
+                  cd '/Agent/workspace/Marketmandu--Backend'
                   sh "mkdir -p trivy-report "
                   def dependencyCheckHome = tool 'OWASP Dependency-Check'
                   
