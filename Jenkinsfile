@@ -148,6 +148,8 @@ pipeline{
                         usernameVariable:"dockerHubUser" )]
                     ){
                         sh '''
+                          echo "${dockerHubPass}" | docker login -u "${dockerHubUser}" --password-stdin
+
                           docker push ${dockerHubUser}/marketmandu-apigateway:latest
                           docker push  ${dockerHubUser}/marketmandu-auth_microservice:latest 
                           docker push  ${dockerHubUser}/marketmandu-ecomerce_microservice:latest 
