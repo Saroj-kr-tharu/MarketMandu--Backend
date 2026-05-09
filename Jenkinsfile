@@ -13,7 +13,19 @@ pipeline{
             echo "checking the Dependency "
          } }
 
-         
+        stage("Trivy File System Scan") { 
+            steps { 
+               echo "Scanning Marketmandu Backend Source Code..."
+               
+               dir('/Agent/workspace/Marketmandu--Backend') {
+                     sh "trivy fs \
+                        --format json \
+                        --output trivy-fs-report.json \
+                        --scanners vuln \
+                        ." 
+               }
+            } 
+         }
 
 
          stage("Docker Image Build"){
@@ -51,7 +63,7 @@ pipeline{
           
          } }
 
-         stage("Scan file system"){
+         stage("Trivy Image Scan "){
            steps{
             echo "Scanning Docker Image "
 
