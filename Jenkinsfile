@@ -9,16 +9,35 @@ pipeline{
          } }
 
          stage("OWASP Dependency Check"){
-           steps{
-            echo "checking the Dependency "
-         } }
+          steps{
+              script {
+                 
+                  sh "mkdir -p trivy-report "
+                  def dependencyCheckHome = tool 'OWASP Dependency-Check'
+                  
+                  withCredentials([string(credentialsId: 'NVD_API_KEY', variable: 'NVD_API_KEY')]) {
+                      sh """
+                          ${dependencyCheckHome}/bin/dependency-check.sh \
+                          --scan . \
+                          --format XML \
+                          --out dependency-check-report \
+                          --prettyPrint \
+                          --nvdApiKey \${NVD_API_KEY}
+                      """
+                  }
+              }
+              
+              
+              dependencyCheckPublisher pattern: 'trivy-report/owasp-report.xml'
+          }
+      }
 
         stage("Trivy File System Scan") { 
             steps { 
                echo "Scanning Marketmandu Backend Source Code..."
                
                dir('/Agent/workspace/Marketmandu--Backend') {
-                     sh "mkdir -p trivy-report "
+                    
                      sh "trivy fs \
                         --format json \
                         --output trivy-report/trivy-fs-report.json \
@@ -110,8 +129,6 @@ pipeline{
                               --scanners vuln \
                               ${dockerHubUser}/marketmandu-payment_microservice:latest';
 
-                         
-                        
                      }
           
          } }
