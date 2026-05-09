@@ -28,7 +28,7 @@ pipeline{
                         sh '''
                           echo "Building 01_ApiGateway "
                           cd /Agent/workspace/Marketmandu--Backend/01_ApiGateway
-                          docker build -t ${dockerHubUser}/marketmandu-apiGateway:latest .
+                          docker build -t ${dockerHubUser}/marketmandu-apigateway:latest .
 
 
                           echo "Building 02_Auth_microservice "
