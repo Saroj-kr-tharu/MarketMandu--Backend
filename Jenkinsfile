@@ -8,6 +8,16 @@ pipeline{
             git url : "https://github.com/Saroj-kr-tharu/MarketMandu--Backend", branch :"main"
          } }
 
+         stage('Install Dependencies') {
+            steps {
+               dir('01_ApiGateway') { sh 'npm install' }
+               dir('02_Auth_microservice') { sh 'npm install' }
+               dir('03_Ecomerce') { sh 'npm install' }
+               dir('04_Remainder_microservice') { sh 'npm install' }
+               dir('05_Payment_microservice') { sh 'npm install' }
+            }
+         }
+
           stage("OWASP Dependency Check"){
             steps{
                script {
