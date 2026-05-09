@@ -30,7 +30,6 @@ pipeline{
                           cd /Agent/workspace/Marketmandu--Backend/01_ApiGateway
                           docker build -t ${dockerHubUser}/marketmandu-apigateway:latest .
 
-
                           echo "Building 02_Auth_microservice "
                           cd /Agent/workspace/Marketmandu--Backend/02_Auth_microservice
                           docker build -t ${dockerHubUser}/marketmandu-auth_microservice:latest .
@@ -54,12 +53,21 @@ pipeline{
 
          stage("scan file system"){ 
             steps{ 
-               echo "Scanning File "
-               sh ' trivy image \
-                  --format json \
-                  --output result.json \
-                  --scanners vuln \
-                  ${dockerHubUser}/marketmandu-backend:latest'
+                     echo "Scanning 01_ApiGateway "
+                       sh ' trivy image \
+                        --format json \
+                        --output marketmandu-apigateway.json \
+                        --scanners vuln \
+                        ${dockerHubUser}/marketmandu-apigateway:latest';
+
+                     echo "Scanning 02_Auth_microservice "
+                       sh ' trivy image \
+                        --format json \
+                        --output 02_Auth_microservice.json \
+                        --scanners vuln \
+                        ${dockerHubUser}/marketmandu-auth_microservice:latest';
+
+                          
          } }
 
          stage("Docker Image Scan"){
