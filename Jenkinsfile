@@ -174,9 +174,9 @@ pipeline{
          stage("Generate Security Report") {
          steps {
             sh """
-                  python3 security_report_generator.py \
+            python3 security_report_generator.py \
                   trivy-report \
-                  trivy-report/final-security-report.md
+                  trivy-report/final-security-report.pdf
             """
          }
       }
@@ -190,7 +190,7 @@ pipeline{
             def user = env.BUILD_USER ?: 'System / Webhook'
             emailext(
                 mimeType: 'text/html',
-                attachmentsPattern: 'trivy-report/final-security-report.md',
+                attachmentsPattern: 'trivy-report/final-security-report.pdf',
                 from: 'sarojtestingkrtharu@gmail.com',
                 to: 'sarojc11345@gmail.com',
                 subject: "✅ Build Success – ${env.JOB_NAME} ",
@@ -266,7 +266,7 @@ pipeline{
             def user = env.BUILD_USER ?: 'System / Webhook'
             emailext(
                 mimeType: 'text/html',
-                attachmentsPattern: 'trivy-report/final-security-report.md',
+                attachmentsPattern: 'trivy-report/final-security-report.pdf',
                 from: 'sarojtestingkrtharu@gmail.com',
                 to: 'sarojc11345@gmail.com',
                 subject: '❌ Build Failed – Todo App',
