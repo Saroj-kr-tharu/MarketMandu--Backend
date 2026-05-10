@@ -17,11 +17,10 @@ from datetime import datetime
 from collections import defaultdict
 
 REPORT_DIR  = sys.argv[1] if len(sys.argv) > 1 else "./trivy-report"
-OUTPUT_FILE = sys.argv[2] if len(sys.argv) > 2 else "security-summary-report"
+OUTPUT_FILE = sys.argv[2] if len(sys.argv) > 2 else "security-summary-report.pdf"
 
-# Strip .md extension if the user passed it — we handle both extensions ourselves
-if OUTPUT_FILE.endswith(".md"):
-    OUTPUT_FILE = OUTPUT_FILE[:-3]
+# Strip any extension and always use .pdf
+OUTPUT_FILE = os.path.splitext(OUTPUT_FILE)[0]
 
 SEVERITY_ORDER = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "UNKNOWN"]
 
@@ -571,15 +570,8 @@ def main():
     for label, filename in image_files.items():
         image_scans.append(parse_trivy(os.path.join(REPORT_DIR, filename), label))
 
-    # ── Markdown ──
-    md_path = OUTPUT_FILE + ".md"
-    with open(md_path, "w") as f:
-        f.write(build_md_report(owasp, fs_scan, image_scans))
-    print(f"[INFO] ✅ Markdown written to: {md_path}")
-
-    # ── PDF ──
-    pdf_path = OUTPUT_FILE + ".pdf"
-    build_pdf_report(owasp, fs_scan, image_scans, pdf_path)
+    # ── PDF only ──
+    build_pdf_report(owasp, fs_scan, image_scans, OUTPUT_FILE + ".pdf")
 
     # ── Terminal summary ──
     print("\n" + "="*50)
