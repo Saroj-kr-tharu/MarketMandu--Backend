@@ -300,18 +300,25 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
 
     # ── Cover band ──────────────────────────────────────────────────────────
     now = datetime.now().strftime("%Y-%m-%d  %H:%M:%S")
-    cover_data = [[
-        Paragraph("Security Scan Summary Report", styles["title"]),
-        Paragraph(f"Marketmandu Backend  |  {now}  |  OWASP Dependency-Check + Trivy",
-                  styles["subtitle"]),
-    ]]
-    cover_tbl = Table(cover_data, colWidths=[doc.width])
+    cover_data = [
+        [Paragraph("Security Scan Summary Report", ParagraphStyle(
+            "CoverTitle", fontName="Helvetica-Bold", fontSize=20,
+            textColor=white, alignment=TA_CENTER, leading=26, spaceAfter=0))],
+        [Paragraph(f"Marketmandu Backend  •  {now}  •  OWASP Dependency-Check + Trivy",
+                   ParagraphStyle("CoverSub", fontName="Helvetica", fontSize=9,
+                   textColor=HexColor("#BDC3C7"), alignment=TA_CENTER, leading=13))],
+    ]
+    cover_tbl = Table(cover_data, colWidths=[doc.width],
+                      rowHeights=[38, 22])
     cover_tbl.setStyle(TableStyle([
-        ("BACKGROUND", (0,0), (-1,-1), BRAND),
-        ("TOPPADDING",    (0,0), (-1,-1), 18),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 18),
-        ("LEFTPADDING",   (0,0), (-1,-1), 14),
-        ("RIGHTPADDING",  (0,0), (-1,-1), 14),
+        ("BACKGROUND",    (0,0), (-1,-1), BRAND),
+        ("TOPPADDING",    (0,0), (0,0),   10),
+        ("BOTTOMPADDING", (0,0), (0,0),   0),
+        ("TOPPADDING",    (0,1), (0,1),   2),
+        ("BOTTOMPADDING", (0,1), (0,1),   10),
+        ("LEFTPADDING",   (0,0), (-1,-1), 12),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 12),
+        ("VALIGN",        (0,0), (-1,-1), "MIDDLE"),
         ("ROUNDEDCORNERS", [6]),
     ]))
     story.append(cover_tbl)
@@ -326,37 +333,37 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
     for v in all_vulns:
         grand_by_sev[v["severity"]] += 1
 
-    # ── Summary scorecards ───────────────────────────────────────────────
+    # ── Summary scorecards — flat 2-row table (no nesting) ─────────────
     story.append(Paragraph("Executive Summary", styles["h1"]))
 
-    card_cols = [("CRITICAL", "🔴"), ("HIGH", "🟠"), ("MEDIUM", "🟡"), ("LOW", "🟢"), ("UNKNOWN", "⚪")]
-    card_data = [[
-        Table(
-            [[Paragraph(f"{grand_by_sev.get(s,0)}", ParagraphStyle(
-                  f"Num_{s}", fontName="Helvetica-Bold", fontSize=26,
-                  textColor=SEV_TEXT_COLOR[s], alignment=TA_CENTER))],
-             [Paragraph(s, ParagraphStyle(
-                  f"Lab_{s}", fontName="Helvetica", fontSize=7.5,
-                  textColor=SEV_TEXT_COLOR[s], alignment=TA_CENTER))]
-            ],
-            colWidths=[(doc.width/5) - 6]
-        )
-        for s, _ in card_cols
-    ]]
-    card_tbl = Table(card_data, colWidths=[(doc.width/5) - 2]*5,
-                     hAlign="CENTER", spaceBefore=4, spaceAfter=4)
-    card_inner_styles = [
-        ("BACKGROUND", (i,0), (i,0), SEV_COLOR[s])
-        for i, (s, _) in enumerate(card_cols)
+    card_cols = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "UNKNOWN"]
+    card_w = doc.width / 5
+    card_data = [
+        # Row 0: big numbers
+        [Paragraph(str(grand_by_sev.get(s, 0)), ParagraphStyle(
+            f"Num_{s}", fontName="Helvetica-Bold", fontSize=28,
+            textColor=SEV_TEXT_COLOR[s], alignment=TA_CENTER, leading=32))
+         for s in card_cols],
+        # Row 1: labels — same background, always visible
+        [Paragraph(s, ParagraphStyle(
+            f"Lab_{s}", fontName="Helvetica-Bold", fontSize=8,
+            textColor=SEV_TEXT_COLOR[s], alignment=TA_CENTER, leading=10))
+         for s in card_cols],
     ]
-    card_inner_styles += [
-        ("TOPPADDING",    (0,0), (-1,-1), 10),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 10),
-        ("LEFTPADDING",   (0,0), (-1,-1), 2),
-        ("RIGHTPADDING",  (0,0), (-1,-1), 2),
+    card_tbl = Table(card_data, colWidths=[card_w] * 5,
+                     hAlign="CENTER", spaceBefore=4, spaceAfter=4)
+    card_style = [("BACKGROUND", (i, 0), (i, 1), SEV_COLOR[s])
+                  for i, s in enumerate(card_cols)]
+    card_style += [
+        ("TOPPADDING",    (0, 0), (-1, 0), 12),
+        ("BOTTOMPADDING", (0, 0), (-1, 0), 2),
+        ("TOPPADDING",    (0, 1), (-1, 1), 0),
+        ("BOTTOMPADDING", (0, 1), (-1, 1), 10),
+        ("LEFTPADDING",   (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING",  (0, 0), (-1, -1), 4),
         ("ROUNDEDCORNERS", [5]),
     ]
-    card_tbl.setStyle(TableStyle(card_inner_styles))
+    card_tbl.setStyle(TableStyle(card_style))
     story.append(card_tbl)
     story.append(Spacer(1, 4))
     story.append(Paragraph(f"Total vulnerabilities detected: <b>{grand_total}</b>", styles["body"]))
@@ -412,10 +419,10 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
 
         if include_target:
             hdrs    = ["Sev", "CVE", "Package", "Ver", "Fixed In", "Score", "Target"]
-            col_ws  = [1.4*cm, 2.8*cm, 2.2*cm, 1.3*cm, 1.8*cm, 1.1*cm, 2.0*cm]
+            col_ws  = [1.7*cm, 2.6*cm, 2.0*cm, 1.3*cm, 1.7*cm, 1.1*cm, 2.2*cm]
         else:
             hdrs   = ["Sev", "CVE / ID", "Package", "Score", "Description"]
-            col_ws = [1.4*cm, 2.8*cm, 2.2*cm, 1.1*cm, 5.1*cm]
+            col_ws = [1.7*cm, 2.8*cm, 2.2*cm, 1.1*cm, 4.8*cm]
 
         rows = [[Paragraph(h, ParagraphStyle("VTH", fontName="Helvetica-Bold",
                    fontSize=7.5, textColor=white, alignment=TA_CENTER)) for h in hdrs]]
@@ -423,10 +430,10 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
         for v in sorted_v:
             sev = v["severity"]
             sev_cell = Table(
-                [[Paragraph(sev[:4], ParagraphStyle("SL",
-                    fontName="Helvetica-Bold", fontSize=6.5,
+                [[Paragraph(sev, ParagraphStyle("SL",
+                    fontName="Helvetica-Bold", fontSize=6,
                     textColor=SEV_TEXT_COLOR[sev], alignment=TA_CENTER))]],
-                colWidths=[1.1*cm]
+                colWidths=[1.6*cm]
             )
             sev_cell.setStyle(TableStyle([
                 ("BACKGROUND", (0,0), (-1,-1), SEV_COLOR[sev]),
