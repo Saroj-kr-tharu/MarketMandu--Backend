@@ -32,7 +32,7 @@ SEVERITY_EMOJI = {
     "UNKNOWN":  "⚪",
 }
 
-# ── Severity palette (RGB 0-1) used in PDF ──────────────────────────────────
+#  Severity palette (RGB 0-1) used in PDF 
 from reportlab.lib.colors import Color, HexColor, white, black, lightgrey
 SEV_COLOR = {
     "CRITICAL": HexColor("#C0392B"),
@@ -49,9 +49,9 @@ SEV_TEXT_COLOR = {
     "UNKNOWN":  white,
 }
 
-# ─────────────────────────────────────────────
+
 # OWASP Dependency-Check XML Parser
-# ─────────────────────────────────────────────
+
 def parse_owasp(xml_path):
     result = {"total": 0, "by_severity": defaultdict(int), "vulnerabilities": []}
     if not os.path.exists(xml_path):
@@ -90,9 +90,9 @@ def parse_owasp(xml_path):
     return result
 
 
-# ─────────────────────────────────────────────
+
 # Trivy JSON Parser
-# ─────────────────────────────────────────────
+
 def parse_trivy(json_path, label):
     result = {"label": label, "total": 0, "by_severity": defaultdict(int), "vulnerabilities": []}
     if not os.path.exists(json_path):
@@ -128,9 +128,9 @@ def parse_trivy(json_path, label):
     return result
 
 
-# ─────────────────────────────────────────────
+
 # Markdown Report Builder (unchanged logic)
-# ─────────────────────────────────────────────
+
 def severity_bar(by_severity, total):
     if total == 0:
         return "No vulnerabilities found ✅"
@@ -231,9 +231,9 @@ def build_md_report(owasp, fs_scan, image_scans):
     return "\n".join(lines)
 
 
-# ─────────────────────────────────────────────
+
 # PDF Report Builder (new)
-# ─────────────────────────────────────────────
+
 def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
     from reportlab.platypus import (
         SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
@@ -298,7 +298,7 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
 
     story = []
 
-    # ── Cover band ──────────────────────────────────────────────────────────
+    #  Cover band 
     now = datetime.now().strftime("%Y-%m-%d  %H:%M:%S")
     cover_data = [
         [Paragraph("Security Scan Summary Report", ParagraphStyle(
@@ -324,7 +324,7 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
     story.append(cover_tbl)
     story.append(Spacer(1, 16))
 
-    # ── Aggregate counts ─────────────────────────────────────────────────
+    #  Aggregate counts 
     all_vulns = owasp["vulnerabilities"] + fs_scan["vulnerabilities"]
     for img in image_scans:
         all_vulns += img["vulnerabilities"]
@@ -333,7 +333,7 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
     for v in all_vulns:
         grand_by_sev[v["severity"]] += 1
 
-    # ── Summary scorecards — flat 2-row table (no nesting) ─────────────
+    #  Summary scorecards — flat 2-row table (no nesting) 
     story.append(Paragraph("Executive Summary", styles["h1"]))
 
     card_cols = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "UNKNOWN"]
@@ -371,7 +371,7 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
     story.append(HRFlowable(width="100%", thickness=1, color=HexColor("#D5D8DC")))
     story.append(Spacer(1, 10))
 
-    # ── Scan breakdown table ─────────────────────────────────────────────
+    #  Scan breakdown table 
     story.append(Paragraph("Scan Breakdown", styles["h1"]))
     all_scans = [("OWASP Dependency-Check", owasp), ("Trivy FS Scan", fs_scan)] + \
                 [(img["label"], img) for img in image_scans]
@@ -412,7 +412,7 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
     story.append(HRFlowable(width="100%", thickness=1, color=HexColor("#D5D8DC")))
     story.append(Spacer(1, 10))
 
-    # ── Helper: render a vuln table ──────────────────────────────────────
+    #  Helper: render a vuln table 
     def _vuln_section(title, vulns, include_target=False):
         order_map = {s: i for i, s in enumerate(SEVERITY_ORDER)}
         sorted_v = sorted(vulns, key=lambda v: order_map.get(v["severity"], 99))
@@ -485,20 +485,20 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
         block.append(Spacer(1, 6))
         return block
 
-    # ── OWASP section ────────────────────────────────────────────────────
+    #  OWASP section 
     story += _vuln_section("OWASP Dependency-Check",
                            owasp["vulnerabilities"], include_target=False)
 
-    # ── FS Scan section ──────────────────────────────────────────────────
+    #  FS Scan section 
     story += _vuln_section("Trivy Filesystem Scan",
                            fs_scan["vulnerabilities"], include_target=True)
 
-    # ── Image sections ───────────────────────────────────────────────────
+    #  Image sections 
     story.append(Paragraph("Trivy Docker Image Scans", styles["h1"]))
     for img in image_scans:
         story += _vuln_section(img["label"], img["vulnerabilities"], include_target=True)
 
-    # ── Critical & High action list ──────────────────────────────────────
+    #  Critical & High action list 
     urgent = [v for v in all_vulns if v["severity"] in ("CRITICAL", "HIGH")]
     if urgent:
         story.append(Paragraph("Action Required — Critical &amp; High", styles["h1"]))
@@ -541,7 +541,7 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
         story.append(HRFlowable(width="100%", thickness=1, color=HexColor("#D5D8DC")))
         story.append(Spacer(1, 8))
 
-    # ── Footer notes ─────────────────────────────────────────────────────
+    #  Footer notes 
     story.append(Paragraph("Notes", styles["h1"]))
     notes = [
         "OWASP Dependency-Check performs best-effort analysis; false positives may exist.",
@@ -557,9 +557,7 @@ def build_pdf_report(owasp, fs_scan, image_scans, pdf_path):
     print(f"[INFO] ✅ PDF written to: {pdf_path}")
 
 
-# ─────────────────────────────────────────────
 # Main
-# ─────────────────────────────────────────────
 def main():
     print(f"[INFO] Reading reports from: {REPORT_DIR}")
 
@@ -577,7 +575,7 @@ def main():
     for label, filename in image_files.items():
         image_scans.append(parse_trivy(os.path.join(REPORT_DIR, filename), label))
 
-    # ── PDF only ──
+    
     build_pdf_report(owasp, fs_scan, image_scans, OUTPUT_FILE + ".pdf")
 
     # ── Terminal summary ──

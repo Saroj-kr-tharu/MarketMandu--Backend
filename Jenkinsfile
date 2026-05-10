@@ -183,6 +183,9 @@ pipeline{
     }
 
     post {
+      always {
+        sh "cd ${WORKSPACE} && python3 security_report_generator.py trivy-report trivy-report/final-security-report.pdf || true"
+    }
 
     success {
         script {
