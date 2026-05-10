@@ -183,6 +183,7 @@ pipeline{
     }
 
     post {
+
     success {
         script {
             buildUserVars()
@@ -333,5 +334,6 @@ pipeline{
                 """
             )
         }
+    }
     }
 }
