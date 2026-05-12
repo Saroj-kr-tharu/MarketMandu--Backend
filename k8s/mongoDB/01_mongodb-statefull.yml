@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-dep
+	namespace: marketmandu-ns
+spec:
+  serviceName: "mongodb-svc"
+  replicas: 1
+  selector:
+	matchLabels:
+  	app: mongodb-dep
+  template:
+	metadata:
+  	labels:
+    	app: mongodb-dep
+	spec:
+  	  containers:
+    	    - name: mongodb-dep
+      	    image: mongodb:14 
+						envFrom:
+							- configMapRef:
+									name: mm-mongodb-config
+						env:
+							- name: MONGO_INITDB_ROOT_USERNAME
+								valueFrom:
+									configMapKeyRef:
+										name: mm-mongodb-config
+										key: MONGO_INITDB_ROOT_USERNAME 
+
+							- name: MONGO_INITDB_ROOT_PASSWORD
+								valueFrom:
+									configMapKeyRef:
+										name: mm-mongodb-config
+										key: MONGO_INITDB_ROOT_PASSWORD 
+								 
+
+      	    volumeMounts:
+        	       - name: mongodb-data
+          	       mountPath: /var/lib/mongodb/data
+  volumeClaimTemplates:
+	- metadata:
+    	  name: mongodb-data
+  	spec:
+    	  accessModes:
+      	      - ReadWriteOnce
+    	resources:
+      	  requests:
+        	    storage: 5Gi
+    	storageClassName: standard

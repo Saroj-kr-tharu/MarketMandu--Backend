@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-dep
+  namespace: marketmandu-ns
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-dep
+  template:
+    metadata:
+      labels:
+        app: auth-dep
+    spec:
+      containers:
+      - name: auth-dep-container
+        image: sarojdockerworkspace/marketmandu-auth_microservice:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3004
+        envFrom:
+          - configMapRef:
+              name: mm-auth-config
+          - secretRef:
+              name: mm-auth-secrets
+        env:
+         
+          - name: PORT
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: PORT
+
+          - name: salt
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: salt
+
+          - name: RefreshPRIVATEJWT
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: RefreshPRIVATEJWT
+
+          - name: PRIVATEJWT
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: PRIVATEJWT
+
+          - name: INTERNAL_SERVER_TOKEN
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: INTERNAL_SERVER_TOKEN
+                
+          - name: EMAIL_ID
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: EMAIL_ID
+
+          - name: PAYMENT_BACKEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: PAYMENT_BACKEND_URL
+
+          - name: FORTEND_SUCESS_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: FORTEND_SUCESS_URL
+
+          - name: MESSAGE_BROKER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: MESSAGE_BROKER_URL
+
+          - name: CHANNEL_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: CHANNEL_NAME
+
+          - name: EXCHANGE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: EXCHANGE_NAME
+
+          - name: REMINDER_BINDING_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: mm-auth-config
+                key: REMINDER_BINDING_KEY
+
+          - name: EMAIL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mm-auth-secrets
+                key: EMAIL_PASSWORD
+         
+        resources:
+          requests:
+            memory: "150Mi"
+            cpu: "100m"
+        limits:
+          memory: "300Mi"
+          cpu: "250m"

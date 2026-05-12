@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mm-apigateway-config
+  namespace: marketmandu-ns
+data:
+  key: value
+ 
+    
+  
+
+

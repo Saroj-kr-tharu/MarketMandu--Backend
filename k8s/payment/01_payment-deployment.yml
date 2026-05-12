@@ -1,0 +1,196 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-dep
+  namespace: marketmandu-ns
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment-dep
+  template:
+    metadata:
+      labels:
+        app: payment-dep
+    spec:
+      containers:
+      - name: payment-dep-container
+        image: sarojdockerworkspace/marketmandu-payment_microservice:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3009
+        envFrom:
+          - configMapRef:
+              name: mm-payment-config
+          - secretRef:
+              name: mm-payment-secrets
+        env:
+         
+          - name: PORT
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: PORT
+
+
+          - name: INTERNAL_SERVER_TOKEN
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: INTERNAL_SERVER_TOKEN
+                
+          - name: EMAIL_ID
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: EMAIL_ID
+
+          - name: PAYMENT_BACKEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: PAYMENT_BACKEND_URL
+
+          - name: APIGATEWAY_BACKEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: APIGATEWAY_BACKEND_URL
+
+          - name: FORTEND_SUCESS_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: FORTEND_SUCESS_URL
+
+          - name: MESSAGE_BROKER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: MESSAGE_BROKER_URL
+
+          - name: CHANNEL_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: CHANNEL_NAME
+
+          - name: EXCHANGE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: EXCHANGE_NAME
+
+          - name: REMINDER_BINDING_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: REMINDER_BINDING_KEY
+
+          - name: FORTEND_SUCESS_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: FORTEND_SUCESS_URL
+
+          - name: PAYMENT_BACKEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: PAYMENT_BACKEND_URL
+          
+          - name: APIGATEWAY_BACKEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: APIGATEWAY_BACKEND_URL
+
+          - name: ECOMMERCE_BACKEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: ECOMMERCE_BACKEND_URL
+
+
+          - name: CLOUDFRONT_KEY_PAIR_ID
+            valueFrom:
+              secretKeyRef:
+                name:  mm-payment-secrets
+                key: CLOUDFRONT_KEY_PAIR_ID
+                
+          - name: STRIPE_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name:  mm-payment-secrets
+                key: STRIPE_SECRET_KEY
+
+          - name: STRIPE_PUBLISHABLE_KEY
+            valueFrom:
+              secretKeyRef:
+                name:  mm-payment-secrets
+                key: STRIPE_PUBLISHABLE_KEY
+
+          - name: STRIPE_FAILED_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: STRIPE_FAILED_URL
+
+          - name: STRIPE_SUCCESS_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: STRIPE_SUCCESS_URL
+
+          - name: KHALTI_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name:  mm-payment-secrets
+                key: KHALTI_SECRET_KEY
+
+          - name: KHALTI_PUBLIC_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: KHALTI_PUBLIC_KEY
+
+          - name: KHALTI_PAYMENT_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: KHALTI_PAYMENT_URL
+
+          - name: KHALTI_VERIFICATION_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: KHALTI_VERIFICATION_URL
+
+          
+
+          - name: ESEWA_SECRET_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: ESEWA_SECRET_KEY
+
+          - name: ESEWA_GATEWAY_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: ESEWA_GATEWAY_URL
+
+          - name: ESEWA_PRODUCT_CODE
+            valueFrom:
+              configMapKeyRef:
+                name: mm-payment-config
+                key: ESEWA_PRODUCT_CODE
+                
+        resources:
+          requests:
+            memory: "150Mi"
+            cpu: "100m"
+        limits:
+          memory: "300Mi"
+          cpu: "250m"

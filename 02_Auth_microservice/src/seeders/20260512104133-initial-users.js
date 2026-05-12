@@ -5,14 +5,12 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     const hashedPassword = '$2b$10$kPyqVStUIqV2LiIu6ofrwelkgdxM.m23uC.TgIrJWM71NIJGTu4.y';
     
-    // You can use a hardcoded token or set it to null.
-    // In production/seeding, it's often set to null since users get a new token upon logging in.
     const refreshToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYUBnbWFpbC5jb20iLCJpZCI6Ijk2MTA4NDc0LWRmZTMtNDYzNi04NjJkLTJmNDUzOTM1ZWE0MSJ9LCJpYXQiOjE3Njg3NTQ5MTMsImV4cCI6MTc2OTM1OTcxM30.hTya9C-KeDgO0edMAiZGrrC1jotMQWNmF7epmAhfdL0';
 
     await queryInterface.bulkInsert('Users', [
       {
         id: '96108474-dfe3-4636-862d-2f453935ea41',
-        email: 'a@example.com',
+        email: 'a@gmail.com',
         username: 'admin',
         password: hashedPassword,
         refreshToken: refreshToken,
@@ -37,23 +35,13 @@ module.exports = {
         email: 'c@gmail.com',
         username: 'customer_c',
         password: hashedPassword,
-        refreshToken: refreshToken, // Or set to null if your DB allows it
+        refreshToken: refreshToken, 
         role: 'CUSTOMER',
-        isActive: true, // Set to true if you want the user to be active by default
+        isActive: true, 
         createdAt: new Date(),
         updatedAt: new Date()
       },
-      {
-        id: '4f128c73-456d-4ee8-b118-ffaa44112233',
-        email: 'c41201@gmail.com',
-        username: 'admin_c41201',
-        password: hashedPassword,
-        refreshToken: refreshToken,
-        role: 'ADMIN',
-        isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
+      
     ], { 
       ignoreDuplicates: true 
     });
@@ -63,10 +51,9 @@ module.exports = {
     await queryInterface.bulkDelete('Users', {
       email: {
         [Sequelize.Op.in]: [
-          'a@example.com',
+          'a@gmail.com',
           'c1@gmail.com',
           'c@gmail.com',
-          'c41201@gmail.com'
         ]
       }
     }, {});

@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigateway-dep
+  namespace: marketmandu-ns
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: apigateway-dep
+  template:
+    metadata:
+      labels:
+        app: apigateway-dep
+    spec:
+      containers:
+      - name: apigateway-dep-container
+        image: sarojdockerworkspace/marketmandu-apigateway:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        envFrom:
+          - configMapRef:
+              name: mm-apigateway-config
+        env:
+          - name: PORT
+            valueFrom:
+              configMapKeyRef:
+                name: mm-apigateway-config
+                key: PORT
+
+          - name: PRIVATEJWT
+            valueFrom:
+              configMapKeyRef:
+                name: mm-apigateway-config
+                key: PRIVATEJWT
+
+          - name: INTERNAL_SERVER_TOKEN
+            valueFrom:
+              configMapKeyRef:
+                name: mm-apigateway-config
+                key: INTERNAL_SERVER_TOKEN
+                
+          - name: FORTEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-apigateway-config
+                key: FORTEND_URL
+
+          - name: ECOMMERCE_BACKEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-apigateway-config
+                key: ECOMMERCE_BACKEND_URL
+
+          - name: PAYMENT_BACKEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-apigateway-config
+                key: PAYMENT_BACKEND_URL
+          
+          - name: REMINDER_BACKEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-apigateway-config
+                key: REMINDER_BACKEND_URL
+
+          - name: AUTH_BACKEND_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mm-apigateway-config
+                key: AUTH_BACKEND_URL
+
+          
+        resources:
+          requests:
+            memory: "150Mi"
+            cpu: "100m"
+        limits:
+          memory: "300Mi"
+          cpu: "250m"

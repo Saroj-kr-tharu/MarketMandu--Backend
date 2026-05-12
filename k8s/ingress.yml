@@ -1,0 +1,65 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: marketmandu-ingress
+  namespace: marketmandu-ns
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "64.227.169.144.nip.io"
+    http:
+      paths:
+    
+      - path: /apigateway(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: apigateway-svc
+            port:
+              number: 3000
+              
+      - path: /auth(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: auth-svc
+            port:
+              number: 3004
+
+      - path: /ecomerce(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ecomerce-svc
+            port:
+              number: 8000
+
+      - path: /payment(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: payment-svc
+            port:
+              number: 3009
+
+      - path: /remainder(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: remainder-svc
+            port:
+              number: 3005
+
+    
+      - path: /()(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: fortend-svc
+            port:
+              number: 80
