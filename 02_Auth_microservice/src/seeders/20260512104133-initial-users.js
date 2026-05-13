@@ -37,7 +37,7 @@ module.exports = {
         password: hashedPassword,
         refreshToken: refreshToken, 
         role: 'CUSTOMER',
-        isActive: true, 
+        isActive: false, 
         createdAt: new Date(),
         updatedAt: new Date()
       },

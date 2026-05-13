@@ -36,6 +36,7 @@ const errorMiddleware = (err, req, res, next) => {
 
     
     // back to normal global error 
+    console.log('why errow mw => ', err)
     return responseHandler.error(res, "Something went wrong");
 };
 
