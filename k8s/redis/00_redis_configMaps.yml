@@ -32,16 +32,3 @@ data:
     # Slow log
     slowlog-log-slower-than 10000
     slowlog-max-len 128
-
-
-
-  
-
-  
-
-
-
-
-  
-
-

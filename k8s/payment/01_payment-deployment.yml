@@ -17,7 +17,7 @@ spec:
       - name: payment-dep-container
         image: sarojdockerworkspace/marketmandu-payment_microservice:latest
         imagePullPolicy: Always
-        
+        # Migration and Startup Script
         command: ["/bin/sh", "-c"]
         args:
           - |
@@ -26,7 +26,6 @@ spec:
             npx sequelize-cli db:create --env development || true &&
             npx sequelize-cli db:migrate --env development &&
             npm start
-        
         ports:
         - containerPort: 3009
         envFrom:
@@ -45,7 +44,6 @@ spec:
               configMapKeyRef:
                 name: mm-payment-config
                 key: INTERNAL_SERVER_TOKEN
-          -
           - name: PAYMENT_BACKEND_URL
             valueFrom:
               configMapKeyRef:
@@ -86,7 +84,6 @@ spec:
               configMapKeyRef:
                 name: mm-payment-config
                 key: ECOMMERCE_BACKEND_URL
-          
           - name: STRIPE_SECRET_KEY
             valueFrom:
               secretKeyRef:
@@ -146,6 +143,6 @@ spec:
           requests:
             memory: "150Mi"
             cpu: "100m"
-          limits: # Now correctly indented inside 'resources'
+          limits:
             memory: "300Mi"
             cpu: "250m"

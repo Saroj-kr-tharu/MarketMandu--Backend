@@ -40,11 +40,11 @@ spec:
                 configMapKeyRef:
                   name: mm-auth-config
                   key: salt
-            - name: RefreshPRIVATEJWT
+            - name: PRIVATEJWTRefersh
               valueFrom:
                 configMapKeyRef:
                   name: mm-auth-config
-                  key: RefreshPRIVATEJWT
+                  key: PRIVATEJWTRefersh
             - name: PRIVATEJWT
               valueFrom:
                 configMapKeyRef:
@@ -118,11 +118,11 @@ spec:
                 configMapKeyRef:
                   name: mm-auth-config
                   key: salt
-            - name: RefreshPRIVATEJWT
+            - name: PRIVATEJWTRefersh
               valueFrom:
                 configMapKeyRef:
                   name: mm-auth-config
-                  key: RefreshPRIVATEJWT
+                  key: PRIVATEJWTRefersh
             - name: PRIVATEJWT
               valueFrom:
                 configMapKeyRef:

@@ -5,8 +5,8 @@ metadata:
   namespace: marketmandu-ns
 spec:
   accessModes:
-	- ReadWriteOnce
+    - ReadWriteOnce
   resources:
-	requests:
-  	storage: 2Gi
+    requests:
+      storage: 1Gi
   storageClassName: standard

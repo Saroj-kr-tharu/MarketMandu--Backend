@@ -2,15 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: rabbitmq-svc
-	namespace: marketmandu-ns
+  namespace: marketmandu-ns
 spec:
-  clusterIP: None  
+  clusterIP: None
   ports:
-	- port: 5672
-  	name: rabbitmq-dep
+    - port: 5672
+      name: rabbitmq-dep
   selector:
-	app: rabbitmq-dep
-
+    app: rabbitmq-dep
+---
 apiVersion: v1
 kind: Service
 metadata:

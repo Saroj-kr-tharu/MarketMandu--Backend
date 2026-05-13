@@ -25,17 +25,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: mm-rabbitmq-config
-          env:
-            - name: RABBITMQ_DEFAULT_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: mm-rabbitmq-config
-                  key: RABBITMQ_DEFAULT_USER
-            - name: RABBITMQ_DEFAULT_PASS
-              valueFrom:
-                configMapKeyRef:
-                  name: mm-rabbitmq-config
-                  key: RABBITMQ_DEFAULT_PASS
           volumeMounts:
             - name: rabbitmq-data
               mountPath: /var/lib/rabbitmq
@@ -53,18 +42,18 @@ spec:
               memory: "1Gi"
               cpu: "500m"
       volumes:
-        - name: rabbitmq-data
-          persistentVolumeClaim:
-            claimName: rabbitmq-pvc
         - name: config
           configMap:
             name: mm-rabbitmq-config
-            items:
-              - key: rabbitmq.conf
-                path: rabbitmq.conf
         - name: plugins
           configMap:
             name: mm-rabbitmq-config
-            items:
-              - key: enabled_plugins
-                path: enabled_plugins
+  volumeClaimTemplates:
+    - metadata:
+        name: rabbitmq-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 1Gi

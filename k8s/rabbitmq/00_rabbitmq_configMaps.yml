@@ -4,9 +4,9 @@ metadata:
   name: mm-rabbitmq-config
   namespace: marketmandu-ns
 data:
-  RABBITMQ_DEFAULT_USER=guest
-  RABBITMQ_DEFAULT_PASS=guest
-  
+  RABBITMQ_DEFAULT_USER: guest
+  RABBITMQ_DEFAULT_PASS: guest
+
   enabled_plugins: |
     [rabbitmq_management].
 
@@ -15,16 +15,3 @@ data:
     disk_free_limit.relative          = 1.5
     log.console                       = true
     log.console.level                 = info
-
-
-
-  
-
-  
-
-
-
-
-  
-
-
