@@ -2,10 +2,10 @@
   "development": {
     "username": "postgres",
     "password": "12345",
-    "database": "authMicroserviceDB",
+    "host": "postgres-svc",
     "port": 5432,
+    "database": "authMicroserviceDB",
     "dialect": "postgres",
-    "host": "postgres_db",
     "logging": false
   },
   "test": {
@@ -21,7 +21,7 @@
     "username": "postgres",
     "password": "12345",
     "database": "authMicroserviceDB",
-    "host": "127.0.0.1",
+    "host": "postgres-svc",
     "port": 5432,
     "dialect": "postgres",
     "logging": false

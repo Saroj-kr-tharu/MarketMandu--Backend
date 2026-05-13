@@ -4,19 +4,6 @@ metadata:
   name: mm-postgres-config
   namespace: marketmandu-ns
 data:
-  POSTGRES_USER:postgres
-  POSTGRES_PASSWORD:12345
-  POSTGRES_DB:POSTGRES_db
-
-
-
-  
-
-  
-
-
-
-
-  
-
-
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: "12345"
+  POSTGRES_DB: POSTGRES_db

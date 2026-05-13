@@ -2,53 +2,35 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: postgres-dep
-	namespace: marketmandu-ns
+  namespace: marketmandu-ns
 spec:
   serviceName: "postgres-svc"
   replicas: 1
   selector:
-	matchLabels:
-  	app: postgres-dep
+    matchLabels:
+      app: postgres-dep
   template:
-	metadata:
-  	labels:
-    	app: postgres-dep
-	spec:
-  	  containers:
-    	    - name: postgres-dep
-      	    image: postgres:14 
-						envFrom:
-							- configMapRef:
-									name: mm-postgres-config
-						env:
-							- name: POSTGRES_DB
-								valueFrom:
-									configMapKeyRef:
-										name: mm-postgres-config
-										key: POSTGRES_DB 
-
-							- name: POSTGRES_PASSWORD
-								valueFrom:
-									configMapKeyRef:
-										name: mm-postgres-config
-										key: POSTGRES_PASSWORD 
-								 
-							- name: POSTGRES_USER
-								valueFrom:
-									configMapKeyRef:
-										name: mm-postgres-config
-										key: POSTGRES_USER 
-
-      	    volumeMounts:
-        	       - name: postgres-pvc
-          	       mountPath: /var/lib/postgresql/data
+    metadata:
+      labels:
+        app: postgres-dep
+    spec:
+      containers:
+        - name: postgres-dep
+          image: postgres:14
+          envFrom:
+            - configMapRef:
+                name: mm-postgres-config
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-pvc
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
-	- metadata:
-    	  name: postgres-pvc
-  	spec:
-    	  accessModes:
-      	      - ReadWriteOnce
-    	resources:
-      	  requests:
-        	    storage: 5Gi
-    	storageClassName: standard
+    - metadata:
+        name: postgres-pvc
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 5Gi
