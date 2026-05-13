@@ -1,6 +1,6 @@
 
-const {responseHandler} = require('../utlis/index');
-const {ClientErrorsCodes,ServerErrosCodes} = require("../utlis/Errors/https.codes")
+const {responseHandler} = require('../Utlis/index');
+const {ClientErrorsCodes,ServerErrosCodes} = require("../Utlis/Errors/https.codes")
 
 const errorMiddleware = (err, req, res, next) => {
     console.log(err)

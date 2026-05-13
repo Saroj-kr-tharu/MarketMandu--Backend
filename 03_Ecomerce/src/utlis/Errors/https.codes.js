@@ -1,7 +1,9 @@
 const ClientErrorsCodes = Object.freeze({
     BAD_REQUEST:400,
     UNAUTHORISED: 401,
-    NOT_FOUND:404
+    NOT_FOUND:404,
+    FORBIDDEN: 403,
+    UNAUTHORIZED: 401,
 });
 
 

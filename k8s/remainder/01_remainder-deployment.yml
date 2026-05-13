@@ -20,26 +20,33 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 3005
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            npm install &&
+            cd src &&
+            npx sequelize-cli db:create --env development || true &&
+            npx sequelize-cli db:migrate --env development &&
+            npx sequelize-cli db:seed:all --env development || true &&
+            npm start
         envFrom:
           - configMapRef:
               name: mm-remainder-config
           - secretRef:
               name: mm-remainder-secrets
         env:
-         
           - name: PORT
             valueFrom:
               configMapKeyRef:
                 name: mm-remainder-config
                 key: PORT
 
-
           - name: INTERNAL_SERVER_TOKEN
             valueFrom:
               configMapKeyRef:
                 name: mm-remainder-config
                 key: INTERNAL_SERVER_TOKEN
-                
+
           - name: EMAIL_ID
             valueFrom:
               configMapKeyRef:
@@ -49,13 +56,13 @@ spec:
           - name: EMAIL_SENDER
             valueFrom:
               configMapKeyRef:
-                name: mm-remainder-secrets
+                name: mm-remainder-config
                 key: EMAIL_SENDER
 
           - name: EMAIL_PASS
             valueFrom:
               secretKeyRef:
-                name:  mm-ecommerce-secrets
+                name: mm-remainder-secrets
                 key: EMAIL_PASS
 
           - name: PAYMENT_BACKEND_URL
@@ -64,13 +71,11 @@ spec:
                 name: mm-remainder-config
                 key: PAYMENT_BACKEND_URL
 
-
           - name: MESSAGE_BROKER_URL
             valueFrom:
               configMapKeyRef:
                 name: mm-remainder-config
                 key: MESSAGE_BROKER_URL
-
 
           - name: EXCHANGE_NAME
             valueFrom:
@@ -101,7 +106,7 @@ spec:
               configMapKeyRef:
                 name: mm-remainder-config
                 key: REDIS_URL
-          
+
           - name: PRIVATEJWTRefersh
             valueFrom:
               configMapKeyRef:
@@ -118,6 +123,6 @@ spec:
           requests:
             memory: "150Mi"
             cpu: "100m"
-        limits:
-          memory: "300Mi"
-          cpu: "250m"
+          limits:
+            memory: "300Mi"
+            cpu: "250m"
