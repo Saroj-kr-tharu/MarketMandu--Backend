@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mm-rabbitmq-config
+  namespace: marketmandu-ns
+data:
+  RABBITMQ_DEFAULT_USER=guest
+  RABBITMQ_DEFAULT_PASS=guest
+  
+  enabled_plugins: |
+    [rabbitmq_management].
+
+  rabbitmq.conf: |
+    vm_memory_high_watermark.relative = 0.7
+    disk_free_limit.relative          = 1.5
+    log.console                       = true
+    log.console.level                 = info
+
+
+
+  
+
+  
+
+
+
+
+  
+
+

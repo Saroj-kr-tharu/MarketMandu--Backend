@@ -40,11 +40,11 @@ spec:
 										key: POSTGRES_USER 
 
       	    volumeMounts:
-        	       - name: postgres-data
+        	       - name: postgres-pvc
           	       mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
 	- metadata:
-    	  name: postgres-data
+    	  name: postgres-pvc
   	spec:
     	  accessModes:
       	      - ReadWriteOnce

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-svc
+	namespace: marketmandu-ns
+spec:
+  clusterIP: None  
+  ports:
+	- port: 5672
+  	name: rabbitmq-dep
+  selector:
+	app: rabbitmq-dep
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-dep
+  namespace: marketmandu-ns
+spec:
+  type: ClusterIP
+  selector:
+    app: rabbitmq-dep
+  ports:
+    - name: amqp
+      port: 5672
+      targetPort: 5672
+    - name: management
+      port: 15672
+      targetPort: 15672

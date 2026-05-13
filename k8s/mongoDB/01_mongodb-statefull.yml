@@ -35,11 +35,11 @@ spec:
 								 
 
       	    volumeMounts:
-        	       - name: mongodb-data
-          	       mountPath: /var/lib/mongodb/data
+        	       - name: mongodb-pvc
+          	       mountPath: /data/db
   volumeClaimTemplates:
 	- metadata:
-    	  name: mongodb-data
+    	  name: mongodb-pvc
   	spec:
     	  accessModes:
       	      - ReadWriteOnce
