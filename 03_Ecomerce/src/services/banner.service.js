@@ -1,5 +1,5 @@
 const Service = require('./curd.service');
-const {BannerRepo} = require('../Repository/index');
+const {BannerRepo} = require('../repository/index');
 const s3service = require('./s3.service');
 
 

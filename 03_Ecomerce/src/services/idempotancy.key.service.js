@@ -1,5 +1,5 @@
 const Service = require('./curd.service');
-const {IdempotancyKeyRepo} = require('../Repository/index');
+const {IdempotancyKeyRepo} = require('../repository/index');
 
 
 class IdempotencyKeyService extends Service {
