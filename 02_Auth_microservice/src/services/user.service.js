@@ -66,7 +66,7 @@ class userService extends CurdService {
             
 
         } catch (error) {
-            console.log("something went wrong in service curd level  (create) ")
+            console.log("something went wrong in service curd level  (create) ", error )
              throw error;
            
         }
