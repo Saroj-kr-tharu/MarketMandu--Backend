@@ -11,55 +11,22 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "64.227.169.144.nip.io"
+  - host: "63.35.250.143.nip.io"
     http:
       paths:
     
-      - path: /apigateway(/|$)(.*)
+      - path: /server(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
             name: apigateway-svc
             port:
               number: 3000
-              
-      - path: /auth(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: auth-svc
-            port:
-              number: 3004
-
-      - path: /ecomerce(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: ecomerce-svc
-            port:
-              number: 8000
-
-      - path: /payment(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: payment-svc
-            port:
-              number: 3009
-
-      - path: /remainder(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: remainder-svc
-            port:
-              number: 3005
-
     
       - path: /()(.*)
         pathType: ImplementationSpecific
         backend:
           service:
-            name: fortend-svc
+            name: /fortend-svc
             port:
               number: 80

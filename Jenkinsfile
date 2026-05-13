@@ -169,6 +169,13 @@ pipeline{
          stage("K8s Deployment/Pod Restart"){
            steps{
             echo "k8s Deploymnet/Pod restarting  "
+            sh """
+              kubectl rollout restart deployment/apigateway-dep -n marketmandu-ns
+              kubectl rollout restart deployment/auth-dep -n marketmandu-ns
+              kubectl rollout restart deployment/ecomerce-dep -n marketmandu-ns
+              kubectl rollout restart deployment/payment-dep -n marketmandu-ns
+              kubectl rollout restart deployment/remainder-dep -n marketmandu-ns
+            """
          } }
 
          stage("Generate Security Report") {

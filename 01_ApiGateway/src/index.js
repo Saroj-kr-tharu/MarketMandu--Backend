@@ -7,6 +7,7 @@ const {  FORTEND_URL, PORT } = require("./serverConfig/server.config");
 const {  authRoutes, paymentRoutes, remainderRoutes, ecommerceRoutes } = require("./routes/index");
 
 const app = express();
+app.set('trust proxy', 1); 
 
 const limiter = rateLimit({
   windowMs: 2 * 60 * 1000,
@@ -15,9 +16,6 @@ const limiter = rateLimit({
 });
 
 app.use(morgan("combined"));
-
-
-// console.log("for=> ", FORTEND_URL)
 
 app.use(
   cors({
