@@ -22,35 +22,72 @@
 
 | Repository | Description | Link |
 |------------|-------------|------|
-| **Frontend (Web Client)** | React-based e-commerce storefront and admin panel | [Saroj-kr-tharu/Ecommerce-fortend](https://github.com/Saroj-kr-tharu/Ecommerce-fortend) |
+| **Frontend (Web Client)** | Angular-based e-commerce storefront and admin panel | [Saroj-kr-tharu/Ecommerce-fortend](https://github.com/Saroj-kr-tharu/Ecommerce-fortend) |
 | **Backend (This Repo)** | Microservices backend, API Gateway, CI/CD & K8s manifests | *(current repository)* |
 
 ---
 
 ## 📑 Table of Contents
 
-1. [Tech Stack](#-tech-stack)
-2. [High-Level Architecture](#-high-level-architecture)
-3. [Frontend Showcase](#-frontend-showcase)
-4. [CI/CD Pipeline — Jenkins](#-cicd-pipeline--jenkins)
-5. [Live Deployment](#-live-deployment)
-6. [Kubernetes Orchestration](#-kubernetes-orchestration)
-7. [Horizontal Pod Autoscaling (HPA)](#-horizontal-pod-autoscaling-hpa)
-8. [Ingress, Pods & Services](#-ingress-pods--services)
-9. [Repository Structure](#-repository-structure)
-10. [Services Overview](#-services-overview)
-11. [Inter-Service Communication](#-inter-service-communication)
-12. [Authentication & Authorization](#-authentication--authorization)
-13. [Data Consistency Strategy](#-data-consistency-strategy)
-14. [Design Patterns Used](#-design-patterns-used)
-15. [Request Lifecycle](#-request-lifecycle-order--payment--notification)
-16. [Payment Gateways](#-payment-gateways)
-17. [Email & Notifications](#-email--notifications)
-18. [Getting Started](#-getting-started)
-19. [Environment Variables](#-environment-variables)
-20. [API Routes](#-api-routes-via-gateway)
-21. [Observability & Troubleshooting](#-observability--troubleshooting)
-22. [Roadmap](#-roadmap--improvements)
+1. [System Design Overview](#-system-design-overview)
+2. [Tech Stack](#-tech-stack)
+3. [High-Level Architecture](#-high-level-architecture)
+4. [Frontend Showcase](#-frontend-showcase)
+5. [CI/CD Pipeline — Jenkins](#-cicd-pipeline--jenkins)
+6. [Live Deployment](#-live-deployment)
+7. [Kubernetes Orchestration](#-kubernetes-orchestration)
+8. [Horizontal Pod Autoscaling (HPA)](#-horizontal-pod-autoscaling-hpa)
+9. [Ingress, Pods & Services](#-ingress-pods--services)
+10. [Repository Structure](#-repository-structure)
+11. [Services Overview](#-services-overview)
+12. [Inter-Service Communication](#-inter-service-communication)
+13. [Authentication & Authorization](#-authentication--authorization)
+14. [Data Consistency Strategy](#-data-consistency-strategy)
+15. [Design Patterns Used](#-design-patterns-used)
+16. [Request Lifecycle](#-request-lifecycle-order--payment--notification)
+17. [Payment Gateways](#-payment-gateways)
+18. [Email & Notifications](#-email--notifications)
+19. [Getting Started](#-getting-started)
+20. [Environment Variables](#-environment-variables)
+21. [API Routes](#-api-routes-via-gateway)
+22. [Observability & Troubleshooting](#-observability--troubleshooting)
+23. [Roadmap](#-roadmap--improvements)
+
+---
+
+## 🗺 System Design Overview
+
+A bird's-eye view of the platform — from the high-level system overview to the microservices architecture, CI/CD pipeline design, Kubernetes deployment topology, and the live production environment. These Figma-authored diagrams are the **source of truth** for the design decisions documented in this README.
+
+### 🔭 Platform Overview
+<p align="center">
+  <img src="Images/figma/overview.png" alt="MarketMandu — high-level platform overview" width="95%" />
+</p>
+
+### 🏗 Microservices Architecture
+<p align="center">
+  <img src="Images/figma/architecture.png" alt="Microservices architecture — services, databases & message broker" width="95%" />
+</p>
+
+### 🔄 CI/CD Architecture
+<p align="center">
+  <img src="Images/figma/cicd%20architecture.png" alt="CI/CD architecture — Git → Jenkins → Docker Hub → Kubernetes" width="95%" />
+</p>
+
+### 🛠 Jenkins Pipeline Design
+<p align="center">
+  <img src="Images/figma/jenkins.png" alt="Jenkins declarative pipeline design" width="95%" />
+</p>
+
+### ☸️ Kubernetes Deployment Topology
+<p align="center">
+  <img src="Images/figma/k8s%20deployemnt.png" alt="Kubernetes deployment topology — namespaces, workloads, services & ingress" width="95%" />
+</p>
+
+### 🌐 Live Deployment
+<p align="center">
+  <img src="Images/figma/LIVE.png" alt="Live deployment — public ingress, DNS & end-user traffic" width="95%" />
+</p>
 
 ---
 
@@ -66,6 +103,7 @@
 | **Payments** | Stripe, eSewa, Khalti, Cash on Delivery |
 | **Email** | Nodemailer (SMTP) + node-cron scheduler |
 | **Storage / CDN** | AWS S3 |
+| **Frontend** | Angular (separate repo) |
 | **Containerization** | Docker, Docker Compose |
 | **Orchestration** | Kubernetes (Deployments, StatefulSets, Services, HPA, Ingress) |
 | **CI/CD** | Jenkins (multi-stage declarative pipeline) |
@@ -128,7 +166,7 @@
 
 ## 🖥 Frontend Showcase
 
-> Frontend repository: **[Saroj-kr-tharu/Ecommerce-fortend](https://github.com/Saroj-kr-tharu/Ecommerce-fortend)**
+> Frontend repository: **[Saroj-kr-tharu/Ecommerce-fortend](https://github.com/Saroj-kr-tharu/Ecommerce-fortend)** — built with **Angular**.
 
 ### 🏠 Home & Landing Pages
 <p align="center">
